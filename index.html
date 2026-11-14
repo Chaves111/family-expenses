@@ -229,6 +229,13 @@
   }
   .toast.show{opacity:1;transform:none}
 
+  /* ---------- LTR (English / French) ---------- */
+  html[dir="ltr"] th, html[dir="ltr"] td{text-align:left}
+  html[dir="ltr"] pre.report{direction:ltr;text-align:left}
+  html[dir="ltr"] ul.legend .lg-pct{text-align:right}
+  html[dir="ltr"] .note, html[dir="ltr"] .alertbox{text-align:left}
+  #langPick{min-width:118px}
+
   @media (max-width:860px){
     .charts{grid-template-columns:1fr}
     .stats{grid-template-columns:1fr 1fr}
@@ -254,33 +261,22 @@
 <header class="top">
   <div class="top-inner">
     <div class="brand">
-      <h1>💰 مصاريف ومداخيل العائلة</h1>
-      <p>كل بياناتك محفوظة في جهازك فقط، بدون حساب ولا إنترنت.</p>
+      <h1 data-i18n="app.title">💰 مصاريف ومداخيل العائلة</h1>
+      <p data-i18n="app.tagline">كل بياناتك محفوظة في جهازك فقط، بدون حساب ولا إنترنت.</p>
     </div>
     <div class="top-tools">
-      <label>الشهر
+      <label><span data-i18n="label.language">اللغة</span>
+        <select id="langPick">
+          <option value="ar">العربية</option>
+          <option value="en">English</option>
+          <option value="fr">Français</option>
+        </select>
+      </label>
+      <label><span data-i18n="label.month">الشهر</span>
         <input type="month" id="monthPick">
       </label>
-      <label>العملة
-        <select id="currencyPick">
-          <option value="ر.س">ريال سعودي (ر.س)</option>
-          <option value="د.إ">درهم إماراتي (د.إ)</option>
-          <option value="ج.م">جنيه مصري (ج.م)</option>
-          <option value="د.ك">دينار كويتي (د.ك)</option>
-          <option value="د.أ">دينار أردني (د.أ)</option>
-          <option value="ر.ع">ريال عماني (ر.ع)</option>
-          <option value="د.ب">دينار بحريني (د.ب)</option>
-          <option value="ر.ق">ريال قطري (ر.ق)</option>
-          <option value="د.ل">دينار ليبي (د.ل)</option>
-          <option value="د.ت">دينار تونسي (د.ت)</option>
-          <option value="د.ج">دينار جزائري (د.ج)</option>
-          <option value="د.م">درهم مغربي (د.م)</option>
-          <option value="ر.ي">ريال يمني (ر.ي)</option>
-          <option value="ل.ل">ليرة لبنانية (ل.ل)</option>
-          <option value="TL">ليرة تركية (TL)</option>
-          <option value="$">دولار ($)</option>
-          <option value="€">يورو (€)</option>
-        </select>
+      <label><span data-i18n="label.currency">العملة</span>
+        <select id="currencyPick"></select>
       </label>
     </div>
   </div>
@@ -288,11 +284,11 @@
 
 <div class="wrap">
   <nav class="tabs" id="tabs">
-    <button class="tabbtn active" data-tab="home">لوحة الشهر</button>
-    <button class="tabbtn" data-tab="tx">الحركات</button>
-    <button class="tabbtn" data-tab="report">التقرير الشهري</button>
-    <button class="tabbtn" data-tab="members">أفراد العائلة</button>
-    <button class="tabbtn" data-tab="cats">التصنيفات</button>
+    <button class="tabbtn active" data-tab="home" data-i18n="tab.home">لوحة الشهر</button>
+    <button class="tabbtn" data-tab="tx" data-i18n="tab.tx">الحركات</button>
+    <button class="tabbtn" data-tab="report" data-i18n="tab.report">التقرير الشهري</button>
+    <button class="tabbtn" data-tab="members" data-i18n="tab.members">أفراد العائلة</button>
+    <button class="tabbtn" data-tab="cats" data-i18n="tab.cats">التصنيفات</button>
   </nav>
 
   <!-- ============ HOME ============ -->
@@ -301,20 +297,20 @@
 
     <div class="card">
       <div class="section-title">
-        <h2>حالة الميزانيات هذا الشهر</h2>
-        <button class="ghost no-print" data-goto="cats">تعديل الميزانيات ←</button>
+        <h2 data-i18n="home.budgetsTitle">حالة الميزانيات هذا الشهر</h2>
+        <button class="ghost no-print" data-goto="cats" data-i18n="home.editBudgets">تعديل الميزانيات ←</button>
       </div>
       <div id="homeAlerts"></div>
     </div>
 
     <div class="charts">
       <div class="card chartcard">
-        <h2>المصاريف حسب التصنيف</h2>
+        <h2 data-i18n="home.expChart">المصاريف حسب التصنيف</h2>
         <p class="sub" id="expChartSub">—</p>
         <div class="chartbody" id="expChart"></div>
       </div>
       <div class="card chartcard">
-        <h2>المداخيل حسب التصنيف</h2>
+        <h2 data-i18n="home.incChart">المداخيل حسب التصنيف</h2>
         <p class="sub" id="incChartSub">—</p>
         <div class="chartbody" id="incChart"></div>
       </div>
@@ -322,16 +318,16 @@
 
     <div class="card">
       <div class="section-title">
-        <h2>توزيع الحركة على أفراد العائلة</h2>
-        <button class="ghost no-print" data-goto="report">التقرير الكامل ←</button>
+        <h2 data-i18n="home.membersTitle">توزيع الحركة على أفراد العائلة</h2>
+        <button class="ghost no-print" data-goto="report" data-i18n="home.fullReport">التقرير الكامل ←</button>
       </div>
       <div id="homeMembers"></div>
     </div>
 
     <div class="card">
       <div class="section-title">
-        <h2>أحدث الحركات</h2>
-        <button class="ghost no-print" data-goto="tx">كل الحركات ←</button>
+        <h2 data-i18n="home.recent">أحدث الحركات</h2>
+        <button class="ghost no-print" data-goto="tx" data-i18n="home.allTx">كل الحركات ←</button>
       </div>
       <div id="homeRecent"></div>
     </div>
@@ -340,42 +336,42 @@
   <!-- ============ TRANSACTIONS ============ -->
   <section class="tabpane" id="tab-tx">
     <form class="card" id="txForm" autocomplete="off">
-      <h2>إضافة حركة جديدة</h2>
-      <p class="sub">الشهر المختار في الأعلى: <strong id="txMonthLabel">—</strong></p>
+      <h2 data-i18n="tx.formTitle">إضافة حركة جديدة</h2>
+      <p class="sub"><span data-i18n="tx.formSub">الشهر المختار في الأعلى:</span> <strong id="txMonthLabel">—</strong></p>
 
       <div class="seg" id="typeSeg">
-        <button type="button" class="segbtn active" data-type="expense">مصروف</button>
-        <button type="button" class="segbtn" data-type="income">دخل</button>
+        <button type="button" class="segbtn active" data-type="expense" data-i18n="tx.expense">مصروف</button>
+        <button type="button" class="segbtn" data-type="income" data-i18n="tx.income">دخل</button>
       </div>
 
       <div class="grid2">
-        <label class="fld">المبلغ
+        <label class="fld"><span data-i18n="fld.amount">المبلغ</span>
           <input id="fAmount" type="number" step="0.01" min="0" placeholder="0.00" required>
         </label>
-        <label class="fld">التاريخ
+        <label class="fld"><span data-i18n="fld.date">التاريخ</span>
           <input id="fDate" type="date" required>
         </label>
-        <label class="fld">التصنيف
+        <label class="fld"><span data-i18n="fld.category">التصنيف</span>
           <select id="fCat" required></select>
         </label>
-        <label class="fld">الفرد (اختياري)
+        <label class="fld"><span data-i18n="fld.memberOptional">الفرد (اختياري)</span>
           <select id="fMember"></select>
         </label>
       </div>
-      <label class="fld">ملاحظة (اختياري)
-        <input id="fNote" type="text" maxlength="120" placeholder="مثال: مشتريات الأسبوع">
+      <label class="fld"><span data-i18n="fld.noteOptional">ملاحظة (اختياري)</span>
+        <input id="fNote" type="text" maxlength="120" data-i18n-ph="ph.note" placeholder="مثال: مشتريات الأسبوع">
       </label>
 
       <div class="row-actions">
-        <button class="primary" type="submit">＋ إضافة الحركة</button>
+        <button class="primary" type="submit" data-i18n="tx.add">＋ إضافة الحركة</button>
       </div>
       <div id="txAlert" class="alertbox" hidden></div>
     </form>
 
     <div class="card">
       <div class="section-title">
-        <h2>حركات الشهر</h2>
-        <span class="pill" id="txCount">0 حركة</span>
+        <h2 data-i18n="tx.monthTitle">حركات الشهر</h2>
+        <span class="pill" id="txCount">0</span>
       </div>
       <div id="txTable"></div>
     </div>
@@ -385,37 +381,37 @@
   <section class="tabpane" id="tab-report">
     <div class="card">
       <div class="section-title">
-        <h2>التقرير الشهري</h2>
+        <h2 data-i18n="report.title">التقرير الشهري</h2>
         <span class="pill" id="reportMonth">—</span>
       </div>
-      <p class="sub">انسخ التقرير أو نزّل الحركات كملف CSV لتحليلها في Excel أو عند إرسالها لأي مساعد ذكي.</p>
+      <p class="sub" data-i18n="report.sub">انسخ التقرير أو نزّل الحركات كملف CSV لتحليلها في Excel أو عند إرسالها لأي مساعد ذكي.</p>
       <div class="row-actions no-print">
-        <button class="primary" id="btnCopyReport">📋 نسخ التقرير</button>
-        <button class="ghost" id="btnCopyCsv">نسخ الحركات (CSV)</button>
-        <button class="ghost" id="btnDownloadCsv">⬇ تنزيل CSV</button>
-        <button class="ghost" id="btnPrint">🖨 طباعة / PDF</button>
+        <button class="primary" id="btnCopyReport" data-i18n="btn.copyReport">📋 نسخ التقرير</button>
+        <button class="ghost" id="btnCopyCsv" data-i18n="btn.copyCsv">نسخ الحركات (CSV)</button>
+        <button class="ghost" id="btnDownloadCsv" data-i18n="btn.downloadCsv">⬇ تنزيل CSV</button>
+        <button class="ghost" id="btnPrint" data-i18n="btn.print">🖨 طباعة / PDF</button>
       </div>
       <div class="stats mt12" id="reportStats" style="margin-bottom:0"></div>
     </div>
 
     <div class="card">
-      <h2>ملخص التقرير (نص جاهز للنسخ)</h2>
-      <p class="sub">هذا النص هو ما سيُنسخ عند الضغط على «نسخ التقرير».</p>
+      <h2 data-i18n="report.summaryTitle">ملخص التقرير (نص جاهز للنسخ)</h2>
+      <p class="sub" data-i18n="report.summarySub">هذا النص هو ما سيُنسخ عند الضغط على «نسخ التقرير».</p>
       <pre class="report" id="reportText">—</pre>
     </div>
 
     <div class="card">
-      <h2>حسب التصنيف</h2>
+      <h2 data-i18n="report.byCat">حسب التصنيف</h2>
       <div id="reportCats"></div>
     </div>
 
     <div class="card">
-      <h2>حسب أفراد العائلة</h2>
+      <h2 data-i18n="report.byMember">حسب أفراد العائلة</h2>
       <div id="reportMembers"></div>
     </div>
 
     <div class="card">
-      <h2>كل حركات الشهر</h2>
+      <h2 data-i18n="report.allTx">كل حركات الشهر</h2>
       <div id="reportTable"></div>
     </div>
   </section>
@@ -423,19 +419,19 @@
   <!-- ============ MEMBERS ============ -->
   <section class="tabpane" id="tab-members">
     <div class="card">
-      <h2>إضافة فرد من العائلة</h2>
-      <p class="sub">أضف الأفراد لتربط كل حركة بصاحبها وتعرف من يصرف أكثر.</p>
+      <h2 data-i18n="members.addTitle">إضافة فرد من العائلة</h2>
+      <p class="sub" data-i18n="members.sub">أضف الأفراد لتربط كل حركة بصاحبها وتعرف من يصرف أكثر.</p>
       <form class="inline-form" id="memberForm" autocomplete="off">
-        <label class="fld grow">اسم الفرد
-          <input id="mName" type="text" maxlength="40" placeholder="مثال: أحمد، أم محمد..." required>
+        <label class="fld grow"><span data-i18n="fld.memberName">اسم الفرد</span>
+          <input id="mName" type="text" maxlength="40" data-i18n-ph="ph.memberName" placeholder="مثال: أحمد، أم محمد..." required>
         </label>
-        <button class="primary" type="submit">＋ إضافة فرد</button>
+        <button class="primary" type="submit" data-i18n="members.add">＋ إضافة فرد</button>
       </form>
       <div class="chiplist" id="memberChips"></div>
     </div>
 
     <div class="card">
-      <h2>حركة كل فرد هذا الشهر</h2>
+      <h2 data-i18n="members.monthTitle">حركة كل فرد هذا الشهر</h2>
       <div id="membersTable"></div>
     </div>
   </section>
@@ -443,47 +439,47 @@
   <!-- ============ CATEGORIES ============ -->
   <section class="tabpane" id="tab-cats">
     <div class="card">
-      <h2>إضافة تصنيف</h2>
-      <p class="sub">التصنيفات تجعل الرسم البياني والتقرير أدق وأسهل للقراءة.</p>
+      <h2 data-i18n="cats.addTitle">إضافة تصنيف</h2>
+      <p class="sub" data-i18n="cats.sub">التصنيفات تجعل الرسم البياني والتقرير أدق وأسهل للقراءة.</p>
       <form class="inline-form" id="catForm" autocomplete="off">
-        <label class="fld grow">اسم التصنيف
-          <input id="cName" type="text" maxlength="40" placeholder="مثال: فواتير الكهرباء" required>
+        <label class="fld grow"><span data-i18n="fld.catName">اسم التصنيف</span>
+          <input id="cName" type="text" maxlength="40" data-i18n-ph="ph.catName" placeholder="مثال: فواتير الكهرباء" required>
         </label>
-        <label class="fld">النوع
+        <label class="fld"><span data-i18n="fld.type">النوع</span>
           <select id="cType">
-            <option value="expense">مصروف</option>
-            <option value="income">دخل</option>
+            <option value="expense" data-i18n="tx.expense">مصروف</option>
+            <option value="income" data-i18n="tx.income">دخل</option>
           </select>
         </label>
-        <button class="primary" type="submit">＋ إضافة تصنيف</button>
+        <button class="primary" type="submit" data-i18n="cats.add">＋ إضافة تصنيف</button>
       </form>
     </div>
 
     <div class="card">
-      <h2>تصنيفات المصاريف</h2>
+      <h2 data-i18n="cats.expTitle">تصنيفات المصاريف</h2>
       <div class="chiplist" id="expCats"></div>
     </div>
 
     <div class="card">
-      <h2>تصنيفات المداخيل</h2>
+      <h2 data-i18n="cats.incTitle">تصنيفات المداخيل</h2>
       <div class="chiplist" id="incCats"></div>
     </div>
 
     <div class="card">
-      <h2>الميزانيات الشهرية</h2>
-      <p class="sub">حدد مبلغًا شهريًا لكل تصنيف مصروف. سيظهر تنبيه أحمر بمجرد تجاوزه، وتنبيه أصفر عند الاقتراب من 80%. اتركه فارغًا لما لا تريد تقييده.</p>
+      <h2 data-i18n="budgets.title">الميزانيات الشهرية</h2>
+      <p class="sub" data-i18n="budgets.sub">حدد مبلغًا شهريًا لكل تصنيف مصروف. سيظهر تنبيه أحمر بمجرد تجاوزه، وتنبيه أصفر عند الاقتراب من 80%. اتركه فارغًا لما لا تريد تقييده.</p>
       <div id="budgetsList"></div>
     </div>
 
     <div class="card">
-      <h2>النسخ الاحتياطي</h2>
-      <p class="sub">احفظ نسخة من كل بياناتك في ملف، أو استعدها على جهاز آخر.</p>
+      <h2 data-i18n="backup.title">النسخ الاحتياطي</h2>
+      <p class="sub" data-i18n="backup.sub">احفظ نسخة من كل بياناتك في ملف، أو استعدها على جهاز آخر.</p>
       <div class="row-actions">
-        <button class="ghost" id="btnBackup">⬇ تنزيل نسخة احتياطية (JSON)</button>
-        <button class="ghost" id="btnRestore">⬆ استعادة من ملف</button>
+        <button class="ghost" id="btnBackup" data-i18n="btn.backup">⬇ تنزيل نسخة احتياطية (JSON)</button>
+        <button class="ghost" id="btnRestore" data-i18n="btn.restore">⬆ استعادة من ملف</button>
         <input type="file" id="restoreFile" accept="application/json,.json" hidden>
       </div>
-      <div class="note">البيانات محفوظة داخل هذا المتصفح فقط. مسح بيانات المتصفح يمسح الحركات، لذا احتفظ بنسخة احتياطية من وقت لآخر.</div>
+      <div class="note" data-i18n="backup.note">البيانات محفوظة داخل هذا المتصفح فقط. مسح بيانات المتصفح يمسح الحركات، لذا احتفظ بنسخة احتياطية من وقت لآخر.</div>
     </div>
   </section>
 </div>
@@ -507,9 +503,412 @@
   const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
   const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
   const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  /* ================= اللغات والترجمة ================= */
+  const LANGS = ["ar", "en", "fr"];
+  const LANG_KEY = "family-budget-lang";
+  let lang = "ar";
+  try{ const savedLang = localStorage.getItem(LANG_KEY); if(LANGS.indexOf(savedLang) >= 0) lang = savedLang; }catch(e){}
+
+  const I18N = {
+    ar: {
+      "doc.title": "مصاريف ومداخيل العائلة",
+      "app.title": "💰 مصاريف ومداخيل العائلة",
+      "app.tagline": "كل بياناتك محفوظة في جهازك فقط، بدون حساب ولا إنترنت.",
+      "label.month": "الشهر", "label.currency": "العملة", "label.language": "اللغة",
+      "tab.home": "لوحة الشهر", "tab.tx": "الحركات", "tab.report": "التقرير الشهري",
+      "tab.members": "أفراد العائلة", "tab.cats": "التصنيفات",
+      "home.budgetsTitle": "حالة الميزانيات هذا الشهر", "home.editBudgets": "تعديل الميزانيات ←",
+      "home.expChart": "المصاريف حسب التصنيف", "home.incChart": "المداخيل حسب التصنيف",
+      "home.membersTitle": "توزيع الحركة على أفراد العائلة", "home.fullReport": "التقرير الكامل ←",
+      "home.recent": "أحدث الحركات", "home.allTx": "كل الحركات ←",
+      "tx.formTitle": "إضافة حركة جديدة", "tx.formSub": "الشهر المختار في الأعلى:",
+      "tx.expense": "مصروف", "tx.income": "دخل",
+      "fld.amount": "المبلغ", "fld.date": "التاريخ", "fld.category": "التصنيف",
+      "fld.memberOptional": "الفرد (اختياري)", "fld.noteOptional": "ملاحظة (اختياري)",
+      "ph.note": "مثال: مشتريات الأسبوع",
+      "tx.add": "＋ إضافة الحركة", "tx.monthTitle": "حركات الشهر",
+      "count.tx": "{n} حركة", "count.tx.one": "حركة واحدة",
+      "report.title": "التقرير الشهري",
+      "report.sub": "انسخ التقرير أو نزّل الحركات كملف CSV لتحليلها في Excel أو عند إرسالها لأي مساعد ذكي.",
+      "btn.copyReport": "📋 نسخ التقرير", "btn.copyCsv": "نسخ الحركات (CSV)",
+      "btn.downloadCsv": "⬇ تنزيل CSV", "btn.print": "🖨 طباعة / PDF",
+      "report.summaryTitle": "ملخص التقرير (نص جاهز للنسخ)",
+      "report.summarySub": "هذا النص هو ما سيُنسخ عند الضغط على «نسخ التقرير».",
+      "report.byCat": "حسب التصنيف", "report.byMember": "حسب أفراد العائلة", "report.allTx": "كل حركات الشهر",
+      "members.addTitle": "إضافة فرد من العائلة",
+      "members.sub": "أضف الأفراد لتربط كل حركة بصاحبها وتعرف من يصرف أكثر.",
+      "fld.memberName": "اسم الفرد", "ph.memberName": "مثال: أحمد، أم محمد...",
+      "members.add": "＋ إضافة فرد", "members.monthTitle": "حركة كل فرد هذا الشهر",
+      "cats.addTitle": "إضافة تصنيف", "cats.sub": "التصنيفات تجعل الرسم البياني والتقرير أدق وأسهل للقراءة.",
+      "fld.catName": "اسم التصنيف", "ph.catName": "مثال: فواتير الكهرباء", "fld.type": "النوع",
+      "cats.add": "＋ إضافة تصنيف", "cats.expTitle": "تصنيفات المصاريف", "cats.incTitle": "تصنيفات المداخيل",
+      "budgets.title": "الميزانيات الشهرية",
+      "budgets.sub": "حدد مبلغًا شهريًا لكل تصنيف مصروف. سيظهر تنبيه أحمر بمجرد تجاوزه، وتنبيه أصفر عند الاقتراب من 80%. اتركه فارغًا لما لا تريد تقييده.",
+      "backup.title": "النسخ الاحتياطي",
+      "backup.sub": "احفظ نسخة من كل بياناتك في ملف، أو استعدها على جهاز آخر.",
+      "btn.backup": "⬇ تنزيل نسخة احتياطية (JSON)", "btn.restore": "⬆ استعادة من ملف",
+      "backup.note": "البيانات محفوظة داخل هذا المتصفح فقط. مسح بيانات المتصفح يمسح الحركات، لذا احتفظ بنسخة احتياطية من وقت لآخر.",
+      "stats.income": "دخل الشهر", "stats.expense": "مصاريف الشهر", "stats.net": "المتبقي (الصافي)",
+      "stats.deficit": "العجز", "stats.txCount": "عدد الحركات",
+      "stats.totalIncome": "الدخل الكلي", "stats.totalExpense": "المصروف الكلي",
+      "stats.netShort": "الصافي", "stats.monthTx": "حركات الشهر",
+      "chart.expSub": "{n} حركة مصروف • {month}", "chart.expSub.one": "حركة مصروف واحدة • {month}",
+      "chart.incSub": "{n} حركة دخل • {month}", "chart.incSub.one": "حركة دخل واحدة • {month}",
+      "chart.total": "الإجمالي", "chart.aria": "رسم بياني دائري",
+      "empty.noData": "لا توجد بيانات لهذا الشهر بعد.",
+      "empty.emptyExpChart": "لم تُسجّل مصاريف في هذا الشهر.",
+      "empty.emptyIncChart": "لم تُسجّل مداخيل في هذا الشهر.",
+      "empty.noMembers": "لم تُضف أفرادًا بعد. أضفهم من تبويب «أفراد العائلة».",
+      "empty.noTxMonth": "لا توجد حركات في هذا الشهر.",
+      "empty.noTxRecent": "لم تُسجّل حركات في هذا الشهر. ابدأ من تبويب «الحركات».",
+      "empty.noTx": "لا توجد حركات.", "empty.noCats": "لا توجد تصنيفات.",
+      "empty.membersNone": "لم تُضف أفرادًا بعد.",
+      "empty.noBudgets": "لم تحدد ميزانيات بعد. اضبط ميزانية شهرية لكل تصنيف من تبويب «التصنيفات» لتظهر هنا حالة الصرف والتنبيهات.",
+      "empty.addExpCats": "أضف تصنيفات مصاريف أولًا.",
+      "table.date": "التاريخ", "table.type": "النوع", "table.category": "التصنيف", "table.member": "الفرد",
+      "table.amount": "المبلغ ({cur})", "table.note": "ملاحظة", "table.delete": "حذف",
+      "table.count": "عدد الحركات", "table.pct": "النسبة",
+      "table.income": "الدخل ({cur})", "table.expense": "المصروف ({cur})", "table.net": "الصافي",
+      "budget.over": "تجاوزت الميزانية بـ {amount}", "budget.left": "المتبقي {amount}",
+      "budget.none": "لا توجد ميزانية محددة", "budget.spent": "تم صرف {amount}",
+      "budget.placeholder": "الميزانية",
+      "alert.overCats": "⚠️ تجاوزت الميزانية في {n} تصنيف: {list}",
+      "alert.overCats.one": "⚠️ تجاوزت الميزانية في تصنيف واحد: {list}",
+      "alert.nearCats": "اقتربت من حد الميزانية في: {list}",
+      "txAlert.over": "⚠️ تجاوزت ميزانية «{name}»: صرفت {spent} من أصل {budget} {cur} — الزيادة {over} {cur}.",
+      "txAlert.near": "اقتربت من ميزانية «{name}»: صرفت {spent} من {budget} {cur}.",
+      "toast.saveFailed": "تعذّر الحفظ في المتصفح",
+      "toast.amountInvalid": "أدخل مبلغًا أكبر من صفر",
+      "toast.pickCategory": "اختر تصنيفًا أو أضف تصنيفًا جديدًا",
+      "toast.overBudget": "تنبيه: تجاوزت ميزانية {name}",
+      "toast.txAdded": "تمت إضافة الحركة ✓",
+      "toast.nameExists": "هذا الاسم موجود بالفعل",
+      "toast.memberAdded": "تمت إضافة الفرد ✓",
+      "toast.catExists": "هذا التصنيف موجود بالفعل",
+      "toast.catAdded": "تمت إضافة التصنيف ✓",
+      "toast.txDeleted": "تم حذف الحركة",
+      "toast.memberInUse": "لا يمكن الحذف: هذا الفرد مرتبط بـ {n} حركة",
+      "toast.memberDeleted": "تم حذف الفرد",
+      "toast.catInUse": "لا يمكن الحذف: هذا التصنيف مستخدم في {n} حركة",
+      "toast.catDeleted": "تم حذف التصنيف",
+      "toast.copied": "تم النسخ ✓",
+      "toast.copyFailed": "تعذّر النسخ، انسخ النص من الصندوق يدويًا",
+      "toast.backupDone": "تم تنزيل النسخة الاحتياطية",
+      "toast.invalidFile": "الملف غير صالح",
+      "toast.readFailed": "تعذّر قراءة الملف",
+      "toast.restored": "تمت الاستعادة ✓",
+      "toast.budgetSaved": "تم حفظ الميزانية ✓",
+      "toast.budgetCleared": "تم إلغاء ميزانية هذا التصنيف",
+      "toast.reportCopied": "تم نسخ التقرير — الصقه حيث تحتاج ✓",
+      "toast.csvCopied": "تم نسخ الحركات بصيغة CSV ✓",
+      "toast.noTxMonth": "لا توجد حركات في هذا الشهر",
+      "toast.fileDownloaded": "تم تنزيل الملف ✓",
+      "confirm.deleteTx": "حذف هذه الحركة؟",
+      "confirm.deleteMember": "حذف هذا الفرد؟",
+      "confirm.deleteCat": "حذف هذا التصنيف؟",
+      "confirm.restore": "استعادة هذا الملف ستحل محل البيانات الحالية. متابعة؟",
+      "misc.uncategorized": "غير مصنف", "misc.wholeFamily": "كل العائلة",
+      "misc.addCatFirst": "— أضف تصنيفًا أولًا —", "misc.listSep": "، ",
+      "csv.date": "التاريخ", "csv.type": "النوع", "csv.category": "التصنيف", "csv.member": "الفرد",
+      "csv.amount": "المبلغ", "csv.currency": "العملة", "csv.note": "ملاحظة",
+      "rt.title": "تقرير مصاريف ومداخيل العائلة",
+      "rt.month": "الشهر: {month} ({ym})", "rt.currency": "العملة: {cur}",
+      "rt.totals": "الإجماليات:", "rt.income": "- الدخل الكلي: {v} {cur}",
+      "rt.expense": "- المصروف الكلي: {v} {cur}", "rt.net": "- الصافي: {v} {cur}",
+      "rt.count": "- عدد الحركات: {n}",
+      "rt.expByCat": "المصاريف حسب التصنيف:", "rt.incByCat": "المداخيل حسب التصنيف:",
+      "rt.noExp": "- لا توجد مصاريف", "rt.noInc": "- لا توجد مداخيل",
+      "rt.catLine": "- {label}: {v} {cur} ({pct}%) — {n} حركة",
+      "rt.byMember": "حسب أفراد العائلة:", "rt.noData": "- لا توجد بيانات",
+      "rt.memberLine": "- {label}: دخل {inc} | مصروف {exp} | صافي {net} | {n} حركة",
+      "rt.detail": "تفصيل الحركات:", "rt.noTx": "- لا توجد حركات",
+      "rt.txLine": "- {date} | {type} | {cat} | {member} | {v} {cur}{note}",
+      "cat.food": "طعام وشراب", "cat.transport": "مواصلات", "cat.bills": "فواتير ومرافق",
+      "cat.housing": "سكن وإيجار", "cat.health": "صحة", "cat.education": "تعليم",
+      "cat.clothes": "ملابس", "cat.leisure": "ترفيه", "cat.otherExpense": "مصاريف أخرى",
+      "cat.salary": "راتب", "cat.sideJob": "عمل إضافي", "cat.bonuses": "مكافآت",
+      "cat.gifts": "هدايا", "cat.otherIncome": "مداخيل أخرى"
+    },
+    en: {
+      "doc.title": "Family Income & Expenses",
+      "app.title": "💰 Family Income & Expenses",
+      "app.tagline": "All your data stays on this device — no account, no internet.",
+      "label.month": "Month", "label.currency": "Currency", "label.language": "Language",
+      "tab.home": "Overview", "tab.tx": "Transactions", "tab.report": "Monthly report",
+      "tab.members": "Family members", "tab.cats": "Categories",
+      "home.budgetsTitle": "Budget status this month", "home.editBudgets": "Edit budgets →",
+      "home.expChart": "Expenses by category", "home.incChart": "Income by category",
+      "home.membersTitle": "Spending by family member", "home.fullReport": "Full report →",
+      "home.recent": "Recent transactions", "home.allTx": "All transactions →",
+      "tx.formTitle": "Add a new transaction", "tx.formSub": "Selected month (top):",
+      "tx.expense": "Expense", "tx.income": "Income",
+      "fld.amount": "Amount", "fld.date": "Date", "fld.category": "Category",
+      "fld.memberOptional": "Member (optional)", "fld.noteOptional": "Note (optional)",
+      "ph.note": "e.g. weekly groceries",
+      "tx.add": "＋ Add transaction", "tx.monthTitle": "This month's transactions",
+      "count.tx": "{n} entries", "count.tx.one": "1 entry",
+      "report.title": "Monthly report",
+      "report.sub": "Copy the report or download the transactions as CSV to analyse them in Excel or hand them to an AI assistant.",
+      "btn.copyReport": "📋 Copy report", "btn.copyCsv": "Copy transactions (CSV)",
+      "btn.downloadCsv": "⬇ Download CSV", "btn.print": "🖨 Print / PDF",
+      "report.summaryTitle": "Report summary (ready to copy)",
+      "report.summarySub": "This is the text copied when you press “Copy report”.",
+      "report.byCat": "By category", "report.byMember": "By family member", "report.allTx": "All transactions this month",
+      "members.addTitle": "Add a family member",
+      "members.sub": "Add members to link each transaction to its owner and see who spends the most.",
+      "fld.memberName": "Member name", "ph.memberName": "e.g. Ahmed, Um Mohammed…",
+      "members.add": "＋ Add member", "members.monthTitle": "Activity per member this month",
+      "cats.addTitle": "Add a category", "cats.sub": "Categories make the chart and the report clearer.",
+      "fld.catName": "Category name", "ph.catName": "e.g. electricity bills", "fld.type": "Type",
+      "cats.add": "＋ Add category", "cats.expTitle": "Expense categories", "cats.incTitle": "Income categories",
+      "budgets.title": "Monthly budgets",
+      "budgets.sub": "Set a monthly amount for each expense category. A red alert appears as soon as you exceed it, and an amber one when you get close to 80%. Leave it empty for categories you don't want to cap.",
+      "backup.title": "Backup",
+      "backup.sub": "Save a copy of all your data to a file, or restore it on another device.",
+      "btn.backup": "⬇ Download backup (JSON)", "btn.restore": "⬆ Restore from file",
+      "backup.note": "Data is stored in this browser only. Clearing browser data erases your transactions, so keep a backup from time to time.",
+      "stats.income": "Income", "stats.expense": "Expenses", "stats.net": "Remaining (net)",
+      "stats.deficit": "Deficit", "stats.txCount": "Transactions",
+      "stats.totalIncome": "Total income", "stats.totalExpense": "Total expenses",
+      "stats.netShort": "Net", "stats.monthTx": "Transactions this month",
+      "chart.expSub": "{n} expense entries • {month}", "chart.expSub.one": "1 expense entry • {month}",
+      "chart.incSub": "{n} income entries • {month}", "chart.incSub.one": "1 income entry • {month}",
+      "chart.total": "Total", "chart.aria": "Pie chart",
+      "empty.noData": "No data for this month yet.",
+      "empty.emptyExpChart": "No expenses recorded this month.",
+      "empty.emptyIncChart": "No income recorded this month.",
+      "empty.noMembers": "No members yet. Add them from the “Family members” tab.",
+      "empty.noTxMonth": "No transactions this month.",
+      "empty.noTxRecent": "No transactions recorded this month. Start from the “Transactions” tab.",
+      "empty.noTx": "No transactions.", "empty.noCats": "No categories.",
+      "empty.membersNone": "No members added yet.",
+      "empty.noBudgets": "No budgets set yet. Set a monthly budget for each category in the “Categories” tab to see spending status and alerts here.",
+      "empty.addExpCats": "Add expense categories first.",
+      "table.date": "Date", "table.type": "Type", "table.category": "Category", "table.member": "Member",
+      "table.amount": "Amount ({cur})", "table.note": "Note", "table.delete": "Delete",
+      "table.count": "Entries", "table.pct": "Share",
+      "table.income": "Income ({cur})", "table.expense": "Expenses ({cur})", "table.net": "Net",
+      "budget.over": "Over budget by {amount}", "budget.left": "{amount} left",
+      "budget.none": "No budget set", "budget.spent": "Spent {amount}",
+      "budget.placeholder": "Budget",
+      "alert.overCats": "⚠️ Over budget in {n} categories: {list}",
+      "alert.overCats.one": "⚠️ Over budget in 1 category: {list}",
+      "alert.nearCats": "Close to the budget limit in: {list}",
+      "txAlert.over": "⚠️ You went over the “{name}” budget: spent {spent} of {budget} {cur} — over by {over} {cur}.",
+      "txAlert.near": "Getting close to the “{name}” budget: spent {spent} of {budget} {cur}.",
+      "toast.saveFailed": "Could not save in this browser",
+      "toast.amountInvalid": "Enter an amount greater than zero",
+      "toast.pickCategory": "Pick a category or add a new one",
+      "toast.overBudget": "Warning: over the {name} budget",
+      "toast.txAdded": "Transaction added ✓",
+      "toast.nameExists": "This name already exists",
+      "toast.memberAdded": "Member added ✓",
+      "toast.catExists": "This category already exists",
+      "toast.catAdded": "Category added ✓",
+      "toast.txDeleted": "Transaction deleted",
+      "toast.memberInUse": "Cannot delete: this member is linked to {n} transactions",
+      "toast.memberDeleted": "Member deleted",
+      "toast.catInUse": "Cannot delete: this category is used in {n} transactions",
+      "toast.catDeleted": "Category deleted",
+      "toast.copied": "Copied ✓",
+      "toast.copyFailed": "Copy failed — select the text in the box and copy it manually",
+      "toast.backupDone": "Backup downloaded",
+      "toast.invalidFile": "Invalid file",
+      "toast.readFailed": "Could not read the file",
+      "toast.restored": "Restored ✓",
+      "toast.budgetSaved": "Budget saved ✓",
+      "toast.budgetCleared": "Budget removed for this category",
+      "toast.reportCopied": "Report copied — paste it wherever you need ✓",
+      "toast.csvCopied": "Transactions copied as CSV ✓",
+      "toast.noTxMonth": "No transactions this month",
+      "toast.fileDownloaded": "File downloaded ✓",
+      "confirm.deleteTx": "Delete this transaction?",
+      "confirm.deleteMember": "Delete this member?",
+      "confirm.deleteCat": "Delete this category?",
+      "confirm.restore": "Restoring this file will replace the current data. Continue?",
+      "misc.uncategorized": "Uncategorised", "misc.wholeFamily": "Whole family",
+      "misc.addCatFirst": "— Add a category first —", "misc.listSep": ", ",
+      "csv.date": "Date", "csv.type": "Type", "csv.category": "Category", "csv.member": "Member",
+      "csv.amount": "Amount", "csv.currency": "Currency", "csv.note": "Note",
+      "rt.title": "Family income and expense report",
+      "rt.month": "Month: {month} ({ym})", "rt.currency": "Currency: {cur}",
+      "rt.totals": "Totals:", "rt.income": "- Total income: {v} {cur}",
+      "rt.expense": "- Total expenses: {v} {cur}", "rt.net": "- Net: {v} {cur}",
+      "rt.count": "- Transactions: {n}",
+      "rt.expByCat": "Expenses by category:", "rt.incByCat": "Income by category:",
+      "rt.noExp": "- No expenses", "rt.noInc": "- No income",
+      "rt.catLine": "- {label}: {v} {cur} ({pct}%) — {n} entries",
+      "rt.byMember": "By family member:", "rt.noData": "- No data",
+      "rt.memberLine": "- {label}: income {inc} | expenses {exp} | net {net} | {n} entries",
+      "rt.detail": "Transaction details:", "rt.noTx": "- No transactions",
+      "rt.txLine": "- {date} | {type} | {cat} | {member} | {v} {cur}{note}",
+      "cat.food": "Food & drink", "cat.transport": "Transport", "cat.bills": "Bills & utilities",
+      "cat.housing": "Housing & rent", "cat.health": "Health", "cat.education": "Education",
+      "cat.clothes": "Clothing", "cat.leisure": "Leisure", "cat.otherExpense": "Other expenses",
+      "cat.salary": "Salary", "cat.sideJob": "Side income", "cat.bonuses": "Bonuses",
+      "cat.gifts": "Gifts", "cat.otherIncome": "Other income"
+    },
+    fr: {
+      "doc.title": "Revenus et dépenses de la famille",
+      "app.title": "💰 Revenus et dépenses de la famille",
+      "app.tagline": "Toutes vos données restent sur cet appareil — sans compte ni internet.",
+      "label.month": "Mois", "label.currency": "Devise", "label.language": "Langue",
+      "tab.home": "Tableau de bord", "tab.tx": "Transactions", "tab.report": "Rapport mensuel",
+      "tab.members": "Membres de la famille", "tab.cats": "Catégories",
+      "home.budgetsTitle": "État des budgets ce mois", "home.editBudgets": "Modifier les budgets →",
+      "home.expChart": "Dépenses par catégorie", "home.incChart": "Revenus par catégorie",
+      "home.membersTitle": "Dépenses par membre de la famille", "home.fullReport": "Rapport complet →",
+      "home.recent": "Transactions récentes", "home.allTx": "Toutes les transactions →",
+      "tx.formTitle": "Ajouter une transaction", "tx.formSub": "Mois sélectionné (en haut) :",
+      "tx.expense": "Dépense", "tx.income": "Revenu",
+      "fld.amount": "Montant", "fld.date": "Date", "fld.category": "Catégorie",
+      "fld.memberOptional": "Membre (facultatif)", "fld.noteOptional": "Note (facultatif)",
+      "ph.note": "ex. courses de la semaine",
+      "tx.add": "＋ Ajouter la transaction", "tx.monthTitle": "Transactions du mois",
+      "count.tx": "{n} transactions", "count.tx.one": "1 transaction",
+      "report.title": "Rapport mensuel",
+      "report.sub": "Copiez le rapport ou téléchargez les transactions en CSV pour les analyser dans Excel ou les envoyer à un assistant IA.",
+      "btn.copyReport": "📋 Copier le rapport", "btn.copyCsv": "Copier les transactions (CSV)",
+      "btn.downloadCsv": "⬇ Télécharger le CSV", "btn.print": "🖨 Imprimer / PDF",
+      "report.summaryTitle": "Résumé du rapport (texte à copier)",
+      "report.summarySub": "C'est le texte copié quand vous appuyez sur « Copier le rapport ».",
+      "report.byCat": "Par catégorie", "report.byMember": "Par membre de la famille", "report.allTx": "Toutes les transactions du mois",
+      "members.addTitle": "Ajouter un membre de la famille",
+      "members.sub": "Ajoutez des membres pour associer chaque transaction à son auteur et voir qui dépense le plus.",
+      "fld.memberName": "Nom du membre", "ph.memberName": "ex. Ahmed, Oum Mohammed…",
+      "members.add": "＋ Ajouter le membre", "members.monthTitle": "Activité de chaque membre ce mois",
+      "cats.addTitle": "Ajouter une catégorie", "cats.sub": "Les catégories rendent le graphique et le rapport plus clairs.",
+      "fld.catName": "Nom de la catégorie", "ph.catName": "ex. factures d'électricité", "fld.type": "Type",
+      "cats.add": "＋ Ajouter la catégorie", "cats.expTitle": "Catégories de dépenses", "cats.incTitle": "Catégories de revenus",
+      "budgets.title": "Budgets mensuels",
+      "budgets.sub": "Définissez un montant mensuel pour chaque catégorie de dépenses. Une alerte rouge apparaît dès que vous le dépassez, et une alerte orange à l'approche de 80 %. Laissez vide pour ne pas limiter.",
+      "backup.title": "Sauvegarde",
+      "backup.sub": "Enregistrez une copie de toutes vos données dans un fichier, ou restaurez-la sur un autre appareil.",
+      "btn.backup": "⬇ Télécharger une sauvegarde (JSON)", "btn.restore": "⬆ Restaurer depuis un fichier",
+      "backup.note": "Les données sont stockées uniquement dans ce navigateur. Effacer les données du navigateur supprime vos transactions : gardez une sauvegarde de temps en temps.",
+      "stats.income": "Revenus du mois", "stats.expense": "Dépenses du mois", "stats.net": "Reste (net)",
+      "stats.deficit": "Déficit", "stats.txCount": "Transactions",
+      "stats.totalIncome": "Revenus totaux", "stats.totalExpense": "Dépenses totales",
+      "stats.netShort": "Net", "stats.monthTx": "Transactions du mois",
+      "chart.expSub": "{n} dépenses • {month}", "chart.expSub.one": "1 dépense • {month}",
+      "chart.incSub": "{n} revenus • {month}", "chart.incSub.one": "1 revenu • {month}",
+      "chart.total": "Total", "chart.aria": "Graphique circulaire",
+      "empty.noData": "Aucune donnée pour ce mois pour l'instant.",
+      "empty.emptyExpChart": "Aucune dépense enregistrée ce mois.",
+      "empty.emptyIncChart": "Aucun revenu enregistré ce mois.",
+      "empty.noMembers": "Aucun membre pour l'instant. Ajoutez-en depuis l'onglet « Membres de la famille ».",
+      "empty.noTxMonth": "Aucune transaction ce mois.",
+      "empty.noTxRecent": "Aucune transaction enregistrée ce mois. Commencez depuis l'onglet « Transactions ».",
+      "empty.noTx": "Aucune transaction.", "empty.noCats": "Aucune catégorie.",
+      "empty.membersNone": "Aucun membre ajouté pour l'instant.",
+      "empty.noBudgets": "Aucun budget défini. Définissez un budget mensuel par catégorie dans l'onglet « Catégories » pour voir ici l'état des dépenses et les alertes.",
+      "empty.addExpCats": "Ajoutez d'abord des catégories de dépenses.",
+      "table.date": "Date", "table.type": "Type", "table.category": "Catégorie", "table.member": "Membre",
+      "table.amount": "Montant ({cur})", "table.note": "Note", "table.delete": "Supprimer",
+      "table.count": "Transactions", "table.pct": "Part",
+      "table.income": "Revenus ({cur})", "table.expense": "Dépenses ({cur})", "table.net": "Net",
+      "budget.over": "Budget dépassé de {amount}", "budget.left": "Reste {amount}",
+      "budget.none": "Aucun budget défini", "budget.spent": "Dépensé {amount}",
+      "budget.placeholder": "Budget",
+      "alert.overCats": "⚠️ Budget dépassé dans {n} catégories : {list}",
+      "alert.overCats.one": "⚠️ Budget dépassé dans 1 catégorie : {list}",
+      "alert.nearCats": "Proche de la limite budgétaire dans : {list}",
+      "txAlert.over": "⚠️ Budget « {name} » dépassé : {spent} dépensés sur {budget} {cur} — dépassement de {over} {cur}.",
+      "txAlert.near": "Vous approchez du budget « {name} » : {spent} dépensés sur {budget} {cur}.",
+      "toast.saveFailed": "Impossible d'enregistrer dans ce navigateur",
+      "toast.amountInvalid": "Saisissez un montant supérieur à zéro",
+      "toast.pickCategory": "Choisissez une catégorie ou créez-en une",
+      "toast.overBudget": "Attention : budget {name} dépassé",
+      "toast.txAdded": "Transaction ajoutée ✓",
+      "toast.nameExists": "Ce nom existe déjà",
+      "toast.memberAdded": "Membre ajouté ✓",
+      "toast.catExists": "Cette catégorie existe déjà",
+      "toast.catAdded": "Catégorie ajoutée ✓",
+      "toast.txDeleted": "Transaction supprimée",
+      "toast.memberInUse": "Suppression impossible : ce membre est lié à {n} transactions",
+      "toast.memberDeleted": "Membre supprimé",
+      "toast.catInUse": "Suppression impossible : cette catégorie est utilisée dans {n} transactions",
+      "toast.catDeleted": "Catégorie supprimée",
+      "toast.copied": "Copié ✓",
+      "toast.copyFailed": "Copie impossible — sélectionnez le texte et copiez-le manuellement",
+      "toast.backupDone": "Sauvegarde téléchargée",
+      "toast.invalidFile": "Fichier invalide",
+      "toast.readFailed": "Impossible de lire le fichier",
+      "toast.restored": "Restauré ✓",
+      "toast.budgetSaved": "Budget enregistré ✓",
+      "toast.budgetCleared": "Budget supprimé pour cette catégorie",
+      "toast.reportCopied": "Rapport copié — collez-le où vous voulez ✓",
+      "toast.csvCopied": "Transactions copiées en CSV ✓",
+      "toast.noTxMonth": "Aucune transaction ce mois",
+      "toast.fileDownloaded": "Fichier téléchargé ✓",
+      "confirm.deleteTx": "Supprimer cette transaction ?",
+      "confirm.deleteMember": "Supprimer ce membre ?",
+      "confirm.deleteCat": "Supprimer cette catégorie ?",
+      "confirm.restore": "La restauration va remplacer les données actuelles. Continuer ?",
+      "misc.uncategorized": "Non classé", "misc.wholeFamily": "Toute la famille",
+      "misc.addCatFirst": "— Ajoutez d'abord une catégorie —", "misc.listSep": ", ",
+      "csv.date": "Date", "csv.type": "Type", "csv.category": "Catégorie", "csv.member": "Membre",
+      "csv.amount": "Montant", "csv.currency": "Devise", "csv.note": "Note",
+      "rt.title": "Rapport des revenus et dépenses de la famille",
+      "rt.month": "Mois : {month} ({ym})", "rt.currency": "Devise : {cur}",
+      "rt.totals": "Totaux :", "rt.income": "- Revenus totaux : {v} {cur}",
+      "rt.expense": "- Dépenses totales : {v} {cur}", "rt.net": "- Net : {v} {cur}",
+      "rt.count": "- Nombre de transactions : {n}",
+      "rt.expByCat": "Dépenses par catégorie :", "rt.incByCat": "Revenus par catégorie :",
+      "rt.noExp": "- Aucune dépense", "rt.noInc": "- Aucun revenu",
+      "rt.catLine": "- {label} : {v} {cur} ({pct} %) — {n} transactions",
+      "rt.byMember": "Par membre de la famille :", "rt.noData": "- Aucune donnée",
+      "rt.memberLine": "- {label} : revenus {inc} | dépenses {exp} | net {net} | {n} transactions",
+      "rt.detail": "Détail des transactions :", "rt.noTx": "- Aucune transaction",
+      "rt.txLine": "- {date} | {type} | {cat} | {member} | {v} {cur}{note}",
+      "cat.food": "Alimentation", "cat.transport": "Transport", "cat.bills": "Factures et charges",
+      "cat.housing": "Logement et loyer", "cat.health": "Santé", "cat.education": "Éducation",
+      "cat.clothes": "Vêtements", "cat.leisure": "Loisirs", "cat.otherExpense": "Autres dépenses",
+      "cat.salary": "Salaire", "cat.sideJob": "Revenu complémentaire", "cat.bonuses": "Primes",
+      "cat.gifts": "Cadeaux", "cat.otherIncome": "Autres revenus"
+    }
+  };
+
+  function tn(key, n, vars){
+    if(n === 1){
+      const dict = I18N[lang] || I18N.ar;
+      if(dict[key + ".one"] != null || I18N.ar[key + ".one"] != null) return t(key + ".one", vars);
+    }
+    return t(key, vars);
+  }
+
+  function t(key, vars){
+    const dict = I18N[lang] || I18N.ar;
+    let s = (dict[key] != null) ? dict[key] : I18N.ar[key];
+    if(s == null) return key;
+    if(vars) s = s.replace(/\{(\w+)\}/g, function(m, k){ return vars[k] == null ? m : String(vars[k]); });
+    return s;
+  }
+
+  /* ================= العُملات ================= */
+  const CUR_INFO = [
+    { code: "ر.س", ar: "ريال سعودي (ر.س)", en: "Saudi Riyal (SAR)", fr: "Riyal saoudien (SAR)", sym: "SAR" },
+    { code: "د.إ", ar: "درهم إماراتي (د.إ)", en: "UAE Dirham (AED)", fr: "Dirham des Émirats (AED)", sym: "AED" },
+    { code: "ج.م", ar: "جنيه مصري (ج.م)", en: "Egyptian Pound (EGP)", fr: "Livre égyptienne (EGP)", sym: "EGP" },
+    { code: "د.ك", ar: "دينار كويتي (د.ك)", en: "Kuwaiti Dinar (KWD)", fr: "Dinar koweïtien (KWD)", sym: "KWD" },
+    { code: "د.أ", ar: "دينار أردني (د.أ)", en: "Jordanian Dinar (JOD)", fr: "Dinar jordanien (JOD)", sym: "JOD" },
+    { code: "ر.ع", ar: "ريال عماني (ر.ع)", en: "Omani Rial (OMR)", fr: "Rial omanais (OMR)", sym: "OMR" },
+    { code: "د.ب", ar: "دينار بحريني (د.ب)", en: "Bahraini Dinar (BHD)", fr: "Dinar bahreïni (BHD)", sym: "BHD" },
+    { code: "ر.ق", ar: "ريال قطري (ر.ق)", en: "Qatari Riyal (QAR)", fr: "Riyal qatari (QAR)", sym: "QAR" },
+    { code: "د.ل", ar: "دينار ليبي (د.ل)", en: "Libyan Dinar (LYD)", fr: "Dinar libyen (LYD)", sym: "LYD" },
+    { code: "د.ت", ar: "دينار تونسي (د.ت)", en: "Tunisian Dinar (TND)", fr: "Dinar tunisien (TND)", sym: "TND" },
+    { code: "د.ج", ar: "دينار جزائري (د.ج)", en: "Algerian Dinar (DZD)", fr: "Dinar algérien (DZD)", sym: "DZD" },
+    { code: "د.م", ar: "درهم مغربي (د.م)", en: "Moroccan Dirham (MAD)", fr: "Dirham marocain (MAD)", sym: "MAD" },
+    { code: "ر.ي", ar: "ريال يمني (ر.ي)", en: "Yemeni Rial (YER)", fr: "Rial yéménite (YER)", sym: "YER" },
+    { code: "ل.ل", ar: "ليرة لبنانية (ل.ل)", en: "Lebanese Pound (LBP)", fr: "Livre libanaise (LBP)", sym: "LBP" },
+    { code: "TL", ar: "ليرة تركية (TL)", en: "Turkish Lira (TRY)", fr: "Livre turque (TRY)", sym: "TRY" },
+    { code: "$", ar: "دولار ($)", en: "US Dollar ($)", fr: "Dollar américain ($)", sym: "$" },
+    { code: "€", ar: "يورو (€)", en: "Euro (€)", fr: "Euro (€)", sym: "€" }
+  ];
+
   const num = (n) => Number(n) || 0;
   const round2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
-  const fmt = (n) => round2(n).toLocaleString("en-US", { maximumFractionDigits: 2 });
+  const fmt = (n) => round2(n).toLocaleString(lang === "fr" ? "fr-FR" : "en-US", { maximumFractionDigits: 2 });
 
   function todayISO(){
     const d = new Date();
@@ -518,8 +917,9 @@
   const monthOf = (dateStr) => String(dateStr || "").slice(0, 7);
   function monthLabel(m){
     if(!m) return "—";
+    const loc = lang === "fr" ? "fr-FR" : (lang === "en" ? "en-GB" : "ar");
     try{
-      return new Intl.DateTimeFormat("ar", { month: "long", year: "numeric" }).format(new Date(m + "-01T00:00:00"));
+      return new Intl.DateTimeFormat(loc, { month: "long", year: "numeric" }).format(new Date(m + "-01T00:00:00"));
     }catch(e){ return m; }
   }
 
@@ -527,20 +927,20 @@
   const LS_KEY = "family-budget-v1";
 
   const DEFAULT_CATEGORIES = [
-    { name: "طعام وشراب",        type: "expense", color: "#f97316" },
-    { name: "مواصلات",           type: "expense", color: "#0ea5e9" },
-    { name: "فواتير ومرافق",     type: "expense", color: "#f59e0b" },
-    { name: "سكن وإيجار",        type: "expense", color: "#8b5cf6" },
-    { name: "صحة",               type: "expense", color: "#ef4444" },
-    { name: "تعليم",             type: "expense", color: "#6366f1" },
-    { name: "ملابس",             type: "expense", color: "#ec4899" },
-    { name: "ترفيه",             type: "expense", color: "#14b8a6" },
-    { name: "مصاريف أخرى",       type: "expense", color: "#64748b" },
-    { name: "راتب",              type: "income",  color: "#15803d" },
-    { name: "عمل إضافي",         type: "income",  color: "#16a34a" },
-    { name: "مكافآت",            type: "income",  color: "#0f766e" },
-    { name: "هدايا",             type: "income",  color: "#65a30d" },
-    { name: "مداخيل أخرى",       type: "income",  color: "#475569" }
+    { key: "cat.food",         type: "expense", color: "#f97316" },
+    { key: "cat.transport",    type: "expense", color: "#0ea5e9" },
+    { key: "cat.bills",        type: "expense", color: "#f59e0b" },
+    { key: "cat.housing",      type: "expense", color: "#8b5cf6" },
+    { key: "cat.health",       type: "expense", color: "#ef4444" },
+    { key: "cat.education",    type: "expense", color: "#6366f1" },
+    { key: "cat.clothes",      type: "expense", color: "#ec4899" },
+    { key: "cat.leisure",      type: "expense", color: "#14b8a6" },
+    { key: "cat.otherExpense", type: "expense", color: "#64748b" },
+    { key: "cat.salary",       type: "income",  color: "#15803d" },
+    { key: "cat.sideJob",      type: "income",  color: "#16a34a" },
+    { key: "cat.bonuses",      type: "income",  color: "#0f766e" },
+    { key: "cat.gifts",        type: "income",  color: "#65a30d" },
+    { key: "cat.otherIncome",  type: "income",  color: "#475569" }
   ];
 
   const PALETTE = ["#0f766e","#f97316","#6366f1","#ef4444","#14b8a6","#8b5cf6",
@@ -561,7 +961,7 @@
 
   function save(){
     try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
-    catch(e){ toast("تعذّر الحفظ في المتصفح"); }
+    catch(e){ toast(t("toast.saveFailed")); }
   }
 
   function load(){
@@ -584,6 +984,7 @@
     }
 
     if(!state.categories.length) state.categories = seedCategories();
+    tagDefaultCategories();
 
     // تنظيف أي حركة تشير لتصنيف محذوف
     const ids = new Set(state.categories.map(c => c.id));
@@ -592,7 +993,16 @@
   }
 
   function seedCategories(){
-    return DEFAULT_CATEGORIES.map(c => ({ id: uid(), name: c.name, type: c.type, color: c.color }));
+    return DEFAULT_CATEGORIES.map(c => ({ id: uid(), key: c.key, name: I18N.ar[c.key], type: c.type, color: c.color }));
+  }
+
+  // ربط التصنيفات الافتراضية القديمة (المحفوظة بأسمائها العربية) بمفاتيح الترجمة
+  function tagDefaultCategories(){
+    const byArabic = {};
+    DEFAULT_CATEGORIES.forEach(d => { byArabic[I18N.ar[d.key]] = d.key; });
+    state.categories.forEach(c => {
+      if(!c.key && byArabic[c.name]) c.key = byArabic[c.name];
+    });
   }
 
   /* ================= توست ================= */
@@ -608,9 +1018,9 @@
   /* ================= استعلامات ================= */
   const catById = (id) => state.categories.find(c => c.id === id) || null;
   const memById = (id) => state.members.find(m => m.id === id) || null;
-  const catName = (id) => { const c = catById(id); return c ? c.name : "غير مصنف"; };
+  const catName = (id) => { const c = catById(id); if(!c) return t("misc.uncategorized"); return c.key ? t(c.key) : c.name; };
   const catColor = (id) => { const c = catById(id); return c ? c.color : "#9ca3af"; };
-  const memName = (id) => { const m = memById(id); return m ? m.name : "كل العائلة"; };
+  const memName = (id) => { const m = memById(id); return m ? m.name : t("misc.wholeFamily"); };
 
   function txsOfMonth(){
     return state.transactions.filter(t => monthOf(t.date) === currentMonth);
@@ -642,7 +1052,12 @@
     return Array.from(map.values()).sort((a, b) => (b.expense + b.income) - (a.expense + a.income));
   }
 
-  const cur = () => state.currency;
+  // العملة المعروضة: رمزها حسب لغة الواجهة
+  function cur(){
+    if(lang === "ar") return state.currency;
+    const info = CUR_INFO.filter(c => c.code === state.currency)[0];
+    return info ? info.sym : state.currency;
+  }
 
   /* ================= الرسم البياني الدائري ================= */
   function donut(items, total){
@@ -666,15 +1081,15 @@
       });
     }
 
-    return '<svg viewBox="0 0 ' + size + ' ' + size + '" width="176" height="176" role="img" aria-label="رسم بياني دائري">' +
+    return '<svg viewBox="0 0 ' + size + ' ' + size + '" width="176" height="176" role="img" aria-label="' + esc(t("chart.aria")) + '">' +
              segs +
-             '<text class="donut-center-total" x="' + cx + '" y="' + (cy - 6) + '" text-anchor="middle">الإجمالي</text>' +
+             '<text class="donut-center-total" x="' + cx + '" y="' + (cy - 6) + '" text-anchor="middle">' + esc(t("chart.total")) + '</text>' +
              '<text class="donut-center-val" x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle">' + esc(fmt(total)) + '</text>' +
            '</svg>';
   }
 
   function legendHTML(items, total){
-    if(!items.length) return '<p class="empty">لا توجد بيانات لهذا الشهر بعد.</p>';
+    if(!items.length) return '<p class="empty">' + esc(t("empty.noData")) + '</p>';
     return '<ul class="legend">' + items.map(it => {
       const pct = total > 0 ? Math.round((it.value / total) * 100) : 0;
       return '<li>' +
@@ -704,25 +1119,25 @@
     const net = round2(totalInc - totalExp);
 
     $("#homeStats").innerHTML =
-      statCard("دخل الشهر", totalInc, "inc") +
-      statCard("مصاريف الشهر", totalExp, "exp") +
-      statCard(net >= 0 ? "المتبقي (الصافي)" : "العجز", Math.abs(net), "net") +
-      '<div class="stat"><span class="k">عدد الحركات</span><div class="v">' + list.length + '</div></div>';
+      statCard(t("stats.income"), totalInc, "inc") +
+      statCard(t("stats.expense"), totalExp, "exp") +
+      statCard(net >= 0 ? t("stats.net") : t("stats.deficit"), Math.abs(net), "net") +
+      '<div class="stat"><span class="k">' + esc(t("stats.txCount")) + '</span><div class="v">' + list.length + '</div></div>';
 
     const expItems = byCategory(list, "expense");
     const incItems = byCategory(list, "income");
 
-    $("#expChartSub").textContent = exps.length + " حركة مصروف • " + monthLabel(currentMonth);
-    $("#incChartSub").textContent = incs.length + " حركة دخل • " + monthLabel(currentMonth);
-    $("#expChart").innerHTML = chartHTML(expItems, totalExp, "لم تُسجّل مصاريف في هذا الشهر.");
-    $("#incChart").innerHTML = chartHTML(incItems, totalInc, "لم تُسجّل مداخيل في هذا الشهر.");
+    $("#expChartSub").textContent = tn("chart.expSub", exps.length, { n: exps.length, month: monthLabel(currentMonth) });
+    $("#incChartSub").textContent = tn("chart.incSub", incs.length, { n: incs.length, month: monthLabel(currentMonth) });
+    $("#expChart").innerHTML = chartHTML(expItems, totalExp, t("empty.emptyExpChart"));
+    $("#incChart").innerHTML = chartHTML(incItems, totalInc, t("empty.emptyIncChart"));
 
     // توزيع الأفراد
     const memRows = byMember(list);
     if(!state.members.length){
-      $("#homeMembers").innerHTML = '<p class="empty">لم تُضف أفرادًا بعد. أضفهم من تبويب «أفراد العائلة».</p>';
+      $("#homeMembers").innerHTML = '<p class="empty">' + esc(t("empty.noMembers")) + '</p>';
     }else if(!list.length){
-      $("#homeMembers").innerHTML = '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+      $("#homeMembers").innerHTML = '<p class="empty">' + esc(t("empty.noTxMonth")) + '</p>';
     }else{
       const maxV = Math.max.apply(null, memRows.map(r => r.expense + r.income).concat([1]));
       $("#homeMembers").innerHTML = memRows.map(r => {
@@ -730,7 +1145,7 @@
         const w = Math.max(2, Math.round((total / maxV) * 100));
         return '<div style="margin-bottom:12px">' +
           '<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px">' +
-            '<span>' + esc(r.label) + ' <span class="pill" style="margin-inline-start:6px">' + r.count + ' حركة</span></span>' +
+            '<span>' + esc(r.label) + ' <span class="pill" style="margin-inline-start:6px">' + esc(tn("count.tx", r.count, { n: r.count })) + '</span></span>' +
             '<span style="font-variant-numeric:tabular-nums;color:#6b7280">' + esc(fmt(total)) + ' ' + esc(cur()) + '</span>' +
           '</div>' +
           '<div style="height:8px;background:#f1eee6;border-radius:999px;overflow:hidden;display:flex">' +
@@ -742,7 +1157,7 @@
 
     // أحدث الحركات
     const recent = list.slice().sort(sortTx).slice(0, 5);
-    $("#homeRecent").innerHTML = recent.length ? txTableHTML(recent, false) : '<p class="empty">لم تُسجّل حركات في هذا الشهر. ابدأ من تبويب «الحركات».</p>';
+    $("#homeRecent").innerHTML = recent.length ? txTableHTML(recent, false) : '<p class="empty">' + esc(t("empty.noTxRecent")) + '</p>';
   }
 
   function statCard(label, value, cls){
@@ -754,22 +1169,22 @@
 
   /* ================= جدول الحركات ================= */
   function txTableHTML(list, withDelete){
-    if(!list.length) return '<p class="empty">لا توجد حركات.</p>';
+    if(!list.length) return '<p class="empty">' + esc(t("empty.noTx")) + '</p>';
     const rows = list.slice().sort(sortTx).map(t => {
       const isInc = t.type === "income";
       return '<tr>' +
         '<td>' + esc(t.date) + '</td>' +
-        '<td>' + (isInc ? '<span class="badge inc">دخل</span>' : '<span class="badge exp">مصروف</span>') + '</td>' +
+        '<td>' + (isInc ? '<span class="badge inc">' + esc(I18N[lang]["tx.income"] || I18N.ar["tx.income"]) + '</span>' : '<span class="badge exp">' + esc(I18N[lang]["tx.expense"] || I18N.ar["tx.expense"]) + '</span>') + '</td>' +
         '<td><span class="dot" style="display:inline-block;width:9px;height:9px;border-radius:3px;background:' + esc(catColor(t.categoryId)) + ';margin-inline-end:6px"></span>' + esc(catName(t.categoryId)) + '</td>' +
         '<td>' + esc(memName(t.memberId)) + '</td>' +
         '<td class="num ' + (isInc ? "amount-inc" : "amount-exp") + '">' + (isInc ? "+" : "−") + " " + esc(fmt(t.amount)) + '</td>' +
         '<td style="color:#6b7280">' + esc(t.note || "—") + '</td>' +
-        (withDelete ? '<td><button class="iconbtn" data-del="' + esc(t.id) + '" title="حذف">حذف</button></td>' : '') +
+        (withDelete ? '<td><button class="iconbtn" data-del="' + esc(t.id) + '" title="' + esc(I18N[lang]["table.delete"] || I18N.ar["table.delete"]) + '">' + esc(I18N[lang]["table.delete"] || I18N.ar["table.delete"]) + '</button></td>' : '') +
       '</tr>';
     }).join("");
 
     return '<div class="tablewrap"><table><thead><tr>' +
-      '<th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>الفرد</th><th>المبلغ (' + esc(cur()) + ')</th><th>ملاحظة</th>' +
+      '<th>' + esc(I18N[lang]["table.date"] || I18N.ar["table.date"]) + '</th><th>' + esc(I18N[lang]["table.type"] || I18N.ar["table.type"]) + '</th><th>' + esc(I18N[lang]["table.category"] || I18N.ar["table.category"]) + '</th><th>' + esc(I18N[lang]["table.member"] || I18N.ar["table.member"]) + '</th><th>' + esc(t("table.amount", { cur: cur() })) + '</th><th>' + esc(I18N[lang]["table.note"] || I18N.ar["table.note"]) + '</th>' +
       (withDelete ? '<th></th>' : '') +
       '</tr></thead><tbody>' + rows + '</tbody></table></div>';
   }
@@ -777,7 +1192,7 @@
   function renderTx(){
     const list = txsOfMonth();
     $("#txMonthLabel").textContent = monthLabel(currentMonth);
-    $("#txCount").textContent = list.length + " حركة";
+    $("#txCount").textContent = tn("count.tx", list.length, { n: list.length });
     $("#txTable").innerHTML = txTableHTML(list, true);
   }
 
@@ -804,62 +1219,72 @@
   function reportText(data){
     const c = cur();
     const L = [];
-    L.push("تقرير مصاريف ومداخيل العائلة");
-    L.push("الشهر: " + monthLabel(currentMonth) + " (" + currentMonth + ")");
-    L.push("العملة: " + c);
+    L.push(t("rt.title"));
+    L.push(t("rt.month", { month: monthLabel(currentMonth), ym: currentMonth }));
+    L.push(t("rt.currency", { cur: c }));
     L.push("");
-    L.push("الإجماليات:");
-    L.push("- الدخل الكلي: " + fmt(data.totalInc) + " " + c);
-    L.push("- المصروف الكلي: " + fmt(data.totalExp) + " " + c);
-    L.push("- الصافي: " + (data.net >= 0 ? "" : "−") + fmt(Math.abs(data.net)) + " " + c);
-    L.push("- عدد الحركات: " + data.list.length);
+    L.push(t("rt.totals"));
+    L.push(t("rt.income", { v: fmt(data.totalInc), cur: c }));
+    L.push(t("rt.expense", { v: fmt(data.totalExp), cur: c }));
+    L.push(t("rt.net", { v: (data.net >= 0 ? "" : "−") + fmt(Math.abs(data.net)), cur: c }));
+    L.push(t("rt.count", { n: data.list.length }));
     L.push("");
 
-    L.push("المصاريف حسب التصنيف:");
-    if(!data.expItems.length) L.push("- لا توجد مصاريف");
+    L.push(t("rt.expByCat"));
+    if(!data.expItems.length) L.push(t("rt.noExp"));
     data.expItems.forEach(it => {
-      L.push("- " + it.label + ": " + fmt(it.value) + " " + c + " (" + pct(it.value, data.totalExp) + "%) — " + it.count + " حركة");
+      L.push(t("rt.catLine", { label: it.label, v: fmt(it.value), cur: c, pct: pct(it.value, data.totalExp), n: it.count }));
     });
     L.push("");
 
-    L.push("المداخيل حسب التصنيف:");
-    if(!data.incItems.length) L.push("- لا توجد مداخيل");
+    L.push(t("rt.incByCat"));
+    if(!data.incItems.length) L.push(t("rt.noInc"));
     data.incItems.forEach(it => {
-      L.push("- " + it.label + ": " + fmt(it.value) + " " + c + " (" + pct(it.value, data.totalInc) + "%) — " + it.count + " حركة");
+      L.push(t("rt.catLine", { label: it.label, v: fmt(it.value), cur: c, pct: pct(it.value, data.totalInc), n: it.count }));
     });
     L.push("");
 
-    L.push("حسب أفراد العائلة:");
-    if(!data.memRows.length) L.push("- لا توجد بيانات");
+    L.push(t("rt.byMember"));
+    if(!data.memRows.length) L.push(t("rt.noData"));
     data.memRows.forEach(r => {
-      L.push("- " + r.label + ": دخل " + fmt(r.income) + " | مصروف " + fmt(r.expense) +
-             " | صافي " + (r.income - r.expense >= 0 ? "" : "−") + fmt(Math.abs(round2(r.income - r.expense))) +
-             " | " + r.count + " حركة");
+      L.push(t("rt.memberLine", {
+        label: r.label,
+        inc: fmt(r.income),
+        exp: fmt(r.expense),
+        net: (r.income - r.expense >= 0 ? "" : "−") + fmt(Math.abs(round2(r.income - r.expense))),
+        n: r.count
+      }));
     });
     L.push("");
 
-    L.push("تفصيل الحركات:");
+    L.push(t("rt.detail"));
     const sorted = data.list.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
-    if(!sorted.length) L.push("- لا توجد حركات");
-    sorted.forEach(t => {
-      L.push("- " + t.date + " | " + (t.type === "income" ? "دخل" : "مصروف") + " | " + catName(t.categoryId) +
-             " | " + memName(t.memberId) + " | " + fmt(t.amount) + " " + c + (t.note ? " | " + t.note : ""));
+    if(!sorted.length) L.push(t("rt.noTx"));
+    sorted.forEach(tx => {
+      L.push(t("rt.txLine", {
+        date: tx.date,
+        type: tx.type === "income" ? t("tx.income") : t("tx.expense"),
+        cat: catName(tx.categoryId),
+        member: memName(tx.memberId),
+        v: fmt(tx.amount), cur: c,
+        note: tx.note ? " | " + tx.note : ""
+      }));
     });
 
     return L.join("\n");
   }
 
   function csvOfMonth(){
-    const rows = [["التاريخ","النوع","التصنيف","الفرد","المبلغ","العملة","ملاحظة"]];
-    txsOfMonth().slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)).forEach(t => {
+    const rows = [[t("csv.date"), t("csv.type"), t("csv.category"), t("csv.member"), t("csv.amount"), t("csv.currency"), t("csv.note")]];
+    txsOfMonth().slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)).forEach(tx => {
       rows.push([
-        t.date,
-        t.type === "income" ? "دخل" : "مصروف",
-        catName(t.categoryId),
-        memName(t.memberId),
-        String(round2(t.amount)),
+        tx.date,
+        tx.type === "income" ? t("tx.income") : t("tx.expense"),
+        catName(tx.categoryId),
+        memName(tx.memberId),
+        String(round2(tx.amount)),
         cur(),
-        t.note || ""
+        tx.note || ""
       ]);
     });
     return rows.map(r => r.map(cell => {
@@ -872,34 +1297,34 @@
     const d = reportData();
     $("#reportMonth").textContent = monthLabel(currentMonth);
     $("#reportStats").innerHTML =
-      statCard("الدخل الكلي", d.totalInc, "inc") +
-      statCard("المصروف الكلي", d.totalExp, "exp") +
-      statCard(d.net >= 0 ? "الصافي" : "العجز", Math.abs(d.net), "net") +
-      '<div class="stat"><span class="k">حركات الشهر</span><div class="v">' + d.list.length + '</div></div>';
+      statCard(t("stats.totalIncome"), d.totalInc, "inc") +
+      statCard(t("stats.totalExpense"), d.totalExp, "exp") +
+      statCard(d.net >= 0 ? t("stats.netShort") : t("stats.deficit"), Math.abs(d.net), "net") +
+      '<div class="stat"><span class="k">' + esc(t("stats.monthTx")) + '</span><div class="v">' + d.list.length + '</div></div>';
 
     $("#reportText").textContent = reportText(d);
 
     // جدول التصنيفات
     const catRows = []
-      .concat(d.expItems.map(i => ({ label: i.label, color: i.color, count: i.count, value: i.value, type: "مصروف", total: d.totalExp })))
-      .concat(d.incItems.map(i => ({ label: i.label, color: i.color, count: i.count, value: i.value, type: "دخل", total: d.totalInc })));
+      .concat(d.expItems.map(i => ({ label: i.label, color: i.color, count: i.count, value: i.value, type: "expense", total: d.totalExp })))
+      .concat(d.incItems.map(i => ({ label: i.label, color: i.color, count: i.count, value: i.value, type: "income", total: d.totalInc })));
 
     $("#reportCats").innerHTML = catRows.length
-      ? '<div class="tablewrap"><table><thead><tr><th>التصنيف</th><th>النوع</th><th>عدد الحركات</th><th>المبلغ (' + esc(cur()) + ')</th><th>النسبة</th></tr></thead><tbody>' +
+      ? '<div class="tablewrap"><table><thead><tr><th>' + esc(I18N[lang]["table.category"] || I18N.ar["table.category"]) + '</th><th>' + esc(I18N[lang]["table.type"] || I18N.ar["table.type"]) + '</th><th>' + esc(I18N[lang]["table.count"] || I18N.ar["table.count"]) + '</th><th>' + esc(t("table.amount", { cur: cur() })) + '</th><th>' + esc(I18N[lang]["table.pct"] || I18N.ar["table.pct"]) + '</th></tr></thead><tbody>' +
         catRows.map(r =>
           '<tr>' +
             '<td><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:' + esc(r.color) + ';margin-inline-end:6px"></span>' + esc(r.label) + '</td>' +
-            '<td>' + (r.type === "دخل" ? '<span class="badge inc">دخل</span>' : '<span class="badge exp">مصروف</span>') + '</td>' +
+            '<td>' + (r.type === "income" ? '<span class="badge inc">' + esc(t("tx.income")) + '</span>' : '<span class="badge exp">' + esc(t("tx.expense")) + '</span>') + '</td>' +
             '<td class="num">' + r.count + '</td>' +
             '<td class="num">' + esc(fmt(r.value)) + '</td>' +
             '<td class="num">' + pct(r.value, r.total) + '%</td>' +
           '</tr>'
         ).join("") + '</tbody></table></div>'
-      : '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+      : '<p class="empty">' + esc(t("empty.noTxMonth")) + '</p>';
 
     // جدول الأفراد
     $("#reportMembers").innerHTML = d.memRows.length
-      ? '<div class="tablewrap"><table><thead><tr><th>الفرد</th><th>الدخل (' + esc(cur()) + ')</th><th>المصروف (' + esc(cur()) + ')</th><th>الصافي</th><th>عدد الحركات</th></tr></thead><tbody>' +
+      ? '<div class="tablewrap"><table><thead><tr><th>' + esc(I18N[lang]["table.member"] || I18N.ar["table.member"]) + '</th><th>' + esc(t("table.income", { cur: cur() })) + '</th><th>' + esc(t("table.expense", { cur: cur() })) + '</th><th>' + esc(I18N[lang]["table.net"] || I18N.ar["table.net"]) + '</th><th>' + esc(I18N[lang]["table.count"] || I18N.ar["table.count"]) + '</th></tr></thead><tbody>' +
         d.memRows.map(r => {
           const netV = round2(r.income - r.expense);
           return '<tr>' +
@@ -910,7 +1335,7 @@
             '<td class="num">' + r.count + '</td>' +
           '</tr>';
         }).join("") + '</tbody></table></div>'
-      : '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+      : '<p class="empty">' + esc(t("empty.noTxMonth")) + '</p>';
 
     $("#reportTable").innerHTML = txTableHTML(d.list, false);
   }
@@ -920,14 +1345,14 @@
     $("#memberChips").innerHTML = state.members.length
       ? state.members.map(m =>
           '<span class="chip">' + esc(m.name) +
-          '<button data-del-member="' + esc(m.id) + '" title="حذف">×</button></span>'
+          '<button data-del-member="' + esc(m.id) + '" title="' + esc(t("table.delete")) + '">×</button></span>'
         ).join("")
-      : '<p class="empty" style="width:100%">لم تُضف أفرادًا بعد.</p>';
+      : '<p class="empty" style="width:100%">' + esc(t("empty.membersNone")) + '</p>';
 
     const list = txsOfMonth();
     const rows = byMember(list);
     $("#membersTable").innerHTML = rows.length
-      ? '<div class="tablewrap"><table><thead><tr><th>الفرد</th><th>الدخل (' + esc(cur()) + ')</th><th>المصروف (' + esc(cur()) + ')</th><th>الصافي</th><th>عدد الحركات</th></tr></thead><tbody>' +
+      ? '<div class="tablewrap"><table><thead><tr><th>' + esc(I18N[lang]["table.member"] || I18N.ar["table.member"]) + '</th><th>' + esc(t("table.income", { cur: cur() })) + '</th><th>' + esc(t("table.expense", { cur: cur() })) + '</th><th>' + esc(I18N[lang]["table.net"] || I18N.ar["table.net"]) + '</th><th>' + esc(I18N[lang]["table.count"] || I18N.ar["table.count"]) + '</th></tr></thead><tbody>' +
         rows.map(r => {
           const netV = round2(r.income - r.expense);
           return '<tr>' +
@@ -938,7 +1363,7 @@
             '<td class="num">' + r.count + '</td>' +
           '</tr>';
         }).join("") + '</tbody></table></div>'
-      : '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+      : '<p class="empty">' + esc(t("empty.noTxMonth")) + '</p>';
   }
 
   /* ================= الميزانيات ================= */
@@ -968,19 +1393,19 @@
   function budgetBarHTML(r, editable){
     const w = Math.min(100, Math.max(2, Math.round(r.used)));
     const foot = r.level === "over"
-      ? "تجاوزت الميزانية بـ " + fmt(r.spent - r.budget) + " " + cur()
-      : "المتبقي " + fmt(r.budget - r.spent) + " " + cur();
+      ? t("budget.over", { amount: fmt(r.spent - r.budget) + " " + cur() })
+      : t("budget.left", { amount: fmt(r.budget - r.spent) + " " + cur() });
 
     return '<div class="budget">' +
       '<div class="budget-top">' +
-        '<span class="budget-name"><span class="dot" style="background:' + esc(r.cat.color) + '"></span>' + esc(r.cat.name) + '</span>' +
+        '<span class="budget-name"><span class="dot" style="background:' + esc(r.cat.color) + '"></span>' + esc(r.cat.key ? t(r.cat.key) : r.cat.name) + '</span>' +
         '<span class="budget-vals"><strong>' + esc(fmt(r.spent)) + '</strong> / ' + esc(fmt(r.budget)) + ' ' + esc(cur()) +
           ' <span style="color:' + (r.level === "over" ? "#dc2626" : r.level === "warn" ? "#d97706" : "#0f766e") + '">(' + Math.round(r.used) + '%)</span></span>' +
       '</div>' +
       '<div class="bar"><div class="fill ' + r.level + '" style="width:' + w + '%"></div></div>' +
       '<div class="budget-foot">' +
         '<span>' + esc(foot) + '</span>' +
-        (editable ? '<input class="budget-input" type="number" min="0" step="10" data-budget="' + esc(r.cat.id) + '" value="' + r.budget + '" placeholder="الميزانية">' : '') +
+        (editable ? '<input class="budget-input" type="number" min="0" step="10" data-budget="' + esc(r.cat.id) + '" value="' + r.budget + '" placeholder="' + esc(t("budget.placeholder")) + '">' : '') +
       '</div>' +
     '</div>';
   }
@@ -988,18 +1413,16 @@
   function renderHomeAlerts(){
     const rows = budgetStatus();
     if(!rows.length){
-      $("#homeAlerts").innerHTML = '<p class="empty">لم تحدد ميزانيات بعد. اضبط ميزانية شهرية لكل تصنيف من تبويب «التصنيفات» لتظهر هنا حالة الصرف والتنبيهات.</p>';
+      $("#homeAlerts").innerHTML = '<p class="empty">' + esc(t("empty.noBudgets")) + '</p>';
       return;
     }
     const over = rows.filter(r => r.level === "over");
     const warn = rows.filter(r => r.level === "warn");
     let head = "";
     if(over.length){
-      head += '<div class="alertbox danger">⚠️ تجاوزت الميزانية في ' + over.length + ' تصنيف: ' +
-        over.map(r => esc(r.cat.name)).join("، ") + '</div>';
+      head += '<div class="alertbox danger">' + esc(tn("alert.overCats", over.length, { n: over.length, list: over.map(r => r.cat.key ? t(r.cat.key) : r.cat.name).join(t("misc.listSep")) })) + '</div>';
     }else if(warn.length){
-      head += '<div class="alertbox warn">اقتربت من حد الميزانية في: ' +
-        warn.map(r => esc(r.cat.name)).join("، ") + '</div>';
+      head += '<div class="alertbox warn">' + esc(t("alert.nearCats", { list: warn.map(r => r.cat.key ? t(r.cat.key) : r.cat.name).join(t("misc.listSep")) })) + '</div>';
     }
     $("#homeAlerts").innerHTML = head + rows.map(r => budgetBarHTML(r, false)).join("");
   }
@@ -1007,7 +1430,7 @@
   function renderBudgets(){
     const cats = state.categories.filter(c => c.type === "expense");
     if(!cats.length){
-      $("#budgetsList").innerHTML = '<p class="empty">أضف تصنيفات مصاريف أولًا.</p>';
+      $("#budgetsList").innerHTML = '<p class="empty">' + esc(t("empty.addExpCats")) + '</p>';
       return;
     }
     $("#budgetsList").innerHTML = cats.map(c => {
@@ -1022,12 +1445,12 @@
       }
       return '<div class="budget">' +
         '<div class="budget-top">' +
-          '<span class="budget-name"><span class="dot" style="background:' + esc(c.color) + '"></span>' + esc(c.name) + '</span>' +
-          '<span class="budget-vals">' + esc(fmt(spentOn(c.id))) + ' تم صرفه ' + esc(cur()) + '</span>' +
+          '<span class="budget-name"><span class="dot" style="background:' + esc(c.color) + '"></span>' + esc(c.key ? t(c.key) : c.name) + '</span>' +
+          '<span class="budget-vals">' + esc(t("budget.spent", { amount: fmt(spentOn(c.id)) + " " + cur() })) + '</span>' +
         '</div>' +
         '<div class="budget-foot">' +
-          '<span>لا توجد ميزانية محددة</span>' +
-          '<input class="budget-input" type="number" min="0" step="10" data-budget="' + esc(c.id) + '" placeholder="الميزانية">' +
+          '<span>' + esc(t("budget.none")) + '</span>' +
+          '<input class="budget-input" type="number" min="0" step="10" data-budget="' + esc(c.id) + '" placeholder="' + esc(t("budget.placeholder")) + '">' +
         '</div>' +
       '</div>';
     }).join("");
@@ -1043,13 +1466,13 @@
 
   /* ================= التصنيفات ================= */
   function renderCats(){
-    const chip = (c) => '<span class="chip"><span class="swatch" style="background:' + esc(c.color) + '"></span>' + esc(c.name) +
-      '<button data-del-cat="' + esc(c.id) + '" title="حذف">×</button></span>';
+    const chip = (c) => '<span class="chip"><span class="swatch" style="background:' + esc(c.color) + '"></span>' + esc(c.key ? t(c.key) : c.name) +
+      '<button data-del-cat="' + esc(c.id) + '" title="' + esc(t("table.delete")) + '">×</button></span>';
 
     const exps = state.categories.filter(c => c.type === "expense");
     const incs = state.categories.filter(c => c.type === "income");
-    $("#expCats").innerHTML = exps.length ? exps.map(chip).join("") : '<p class="empty" style="width:100%">لا توجد تصنيفات.</p>';
-    $("#incCats").innerHTML = incs.length ? incs.map(chip).join("") : '<p class="empty" style="width:100%">لا توجد تصنيفات.</p>';
+    $("#expCats").innerHTML = exps.length ? exps.map(chip).join("") : '<p class="empty" style="width:100%">' + esc(t("empty.noCats")) + '</p>';
+    $("#incCats").innerHTML = incs.length ? incs.map(chip).join("") : '<p class="empty" style="width:100%">' + esc(t("empty.noCats")) + '</p>';
   }
 
   /* ================= النماذج ================= */
@@ -1062,10 +1485,10 @@
   function populateForm(){
     const cats = state.categories.filter(c => c.type === formType);
     setOptions($("#fCat"), cats.length
-      ? cats.map(c => '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>').join("")
-      : '<option value="">— أضف تصنيفًا أولًا —</option>');
+      ? cats.map(c => '<option value="' + esc(c.id) + '">' + esc(c.key ? t(c.key) : c.name) + '</option>').join("")
+      : '<option value="">' + esc(t("misc.addCatFirst")) + '</option>');
 
-    setOptions($("#fMember"), '<option value="">— كل العائلة —</option>' +
+    setOptions($("#fMember"), '<option value="">— ' + esc(t("misc.wholeFamily")) + ' —</option>' +
       state.members.map(m => '<option value="' + esc(m.id) + '">' + esc(m.name) + '</option>').join(""));
 
     if(!$("#fDate").value) $("#fDate").value = todayISO();
@@ -1079,8 +1502,8 @@
     const memberId = $("#fMember").value || "";
     const note = $("#fNote").value.trim();
 
-    if(!(amount > 0)){ toast("أدخل مبلغًا أكبر من صفر"); return; }
-    if(!categoryId){ toast("اختر تصنيفًا أو أضف تصنيفًا جديدًا"); return; }
+    if(!(amount > 0)){ toast(t("toast.amountInvalid")); return; }
+    if(!categoryId){ toast(t("toast.pickCategory")); return; }
 
     state.transactions.push({
       id: uid(),
@@ -1101,11 +1524,10 @@
         const spent = spentOn(categoryId);
         const name = catName(categoryId);
         if(spent > budget){
-          txAlert("danger", "⚠️ تجاوزت ميزانية «" + name + "»: صرفت " + fmt(spent) + " من أصل " + fmt(budget) + " " + cur() +
-                 " — الزيادة " + fmt(spent - budget) + " " + cur() + ".");
-          toast("تنبيه: تجاوزت ميزانية " + name);
+          txAlert("danger", t("txAlert.over", { name: name, spent: fmt(spent), budget: fmt(budget), cur: cur(), over: fmt(spent - budget) }));
+          toast(t("toast.overBudget", { name: name }));
         }else if((spent / budget) * 100 >= 80){
-          txAlert("warn", "اقتربت من ميزانية «" + name + "»: صرفت " + fmt(spent) + " من " + fmt(budget) + " " + cur() + ".");
+          txAlert("warn", t("txAlert.near", { name: name, spent: fmt(spent), budget: fmt(budget), cur: cur() }));
         }else{
           txAlert(null);
         }
@@ -1120,7 +1542,7 @@
     $("#fNote").value = "";
     $("#fAmount").focus();
 
-    toast("تمت إضافة الحركة ✓");
+    toast(t("toast.txAdded"));
     renderAll();
   }
 
@@ -1128,11 +1550,11 @@
     e.preventDefault();
     const name = $("#mName").value.trim();
     if(!name) return;
-    if(state.members.some(m => m.name === name)){ toast("هذا الاسم موجود بالفعل"); return; }
+    if(state.members.some(m => m.name === name)){ toast(t("toast.nameExists")); return; }
     state.members.push({ id: uid(), name: name });
     save();
     $("#mName").value = "";
-    toast("تمت إضافة الفرد ✓");
+    toast(t("toast.memberAdded"));
     renderAll();
   }
 
@@ -1141,47 +1563,47 @@
     const name = $("#cName").value.trim();
     const type = $("#cType").value;
     if(!name) return;
-    if(state.categories.some(c => c.name === name && c.type === type)){ toast("هذا التصنيف موجود بالفعل"); return; }
+    if(state.categories.some(c => c.name === name && c.type === type)){ toast(t("toast.catExists")); return; }
     const color = PALETTE[state.categories.length % PALETTE.length];
     state.categories.push({ id: uid(), name: name, type: type, color: color });
     save();
     $("#cName").value = "";
-    toast("تمت إضافة التصنيف ✓");
+    toast(t("toast.catAdded"));
     renderAll();
   }
 
   /* ================= حذف ================= */
   function deleteTx(id){
-    const t = state.transactions.find(x => x.id === id);
-    if(!t) return;
-    if(!confirm("حذف هذه الحركة؟\n" + t.date + " — " + catName(t.categoryId) + " — " + fmt(t.amount) + " " + cur())) return;
+    const tx = state.transactions.find(x => x.id === id);
+    if(!tx) return;
+    if(!confirm(t("confirm.deleteTx") + "\n" + tx.date + " — " + catName(tx.categoryId) + " — " + fmt(tx.amount) + " " + cur())) return;
     state.transactions = state.transactions.filter(x => x.id !== id);
-    save(); toast("تم حذف الحركة");
+    save(); toast(t("toast.txDeleted"));
     renderAll();
   }
 
   function deleteMember(id){
     const used = state.transactions.filter(t => t.memberId === id).length;
-    if(used > 0){ toast("لا يمكن الحذف: هذا الفرد مرتبط بـ " + used + " حركة"); return; }
-    if(!confirm("حذف هذا الفرد؟")) return;
+    if(used > 0){ toast(t("toast.memberInUse", { n: used })); return; }
+    if(!confirm(t("confirm.deleteMember"))) return;
     state.members = state.members.filter(m => m.id !== id);
-    save(); toast("تم حذف الفرد");
+    save(); toast(t("toast.memberDeleted"));
     renderAll();
   }
 
   function deleteCat(id){
     const used = state.transactions.filter(t => t.categoryId === id).length;
-    if(used > 0){ toast("لا يمكن الحذف: هذا التصنيف مستخدم في " + used + " حركة"); return; }
-    if(!confirm("حذف هذا التصنيف؟")) return;
+    if(used > 0){ toast(t("toast.catInUse", { n: used })); return; }
+    if(!confirm(t("confirm.deleteCat"))) return;
     state.categories = state.categories.filter(c => c.id !== id);
     delete state.budgets[id];
-    save(); toast("تم حذف التصنيف");
+    save(); toast(t("toast.catDeleted"));
     renderAll();
   }
 
   /* ================= نسخ وتنزيل ================= */
   function copyText(text, okMsg){
-    const done = () => toast(okMsg || "تم النسخ ✓");
+    const done = () => toast(okMsg || t("toast.copied"));
     if(navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
     }else{
@@ -1197,7 +1619,7 @@
     document.body.appendChild(ta);
     ta.select();
     try{ document.execCommand("copy"); done(); }
-    catch(e){ toast("تعذّر النسخ، انسخ النص من الصندوق يدويًا"); }
+    catch(e){ toast(t("toast.copyFailed")); }
     document.body.removeChild(ta);
   }
 
@@ -1216,8 +1638,8 @@
   /* ================= النسخ الاحتياطي ================= */
   function backup(){
     const payload = JSON.stringify({ app: "family-budget", exportedAt: new Date().toISOString(), data: state }, null, 2);
-    download("نسخة-احتياطية-" + todayISO() + ".json", payload, "application/json");
-    toast("تم تنزيل النسخة الاحتياطية");
+    download("backup-" + todayISO() + ".json", payload, "application/json");
+    toast(t("toast.backupDone"));
   }
 
   function restore(file){
@@ -1227,20 +1649,21 @@
         const parsed = JSON.parse(String(reader.result));
         const d = parsed && parsed.data ? parsed.data : parsed;
         if(!d || !Array.isArray(d.categories) || !Array.isArray(d.transactions)){
-          toast("الملف غير صالح"); return;
+          toast(t("toast.invalidFile")); return;
         }
-        if(!confirm("استعادة هذا الملف ستحل محل البيانات الحالية. متابعة؟")) return;
+        if(!confirm(t("confirm.restore"))) return;
         state.members = Array.isArray(d.members) ? d.members : [];
         state.categories = Array.isArray(d.categories) && d.categories.length ? d.categories : seedCategories();
+        tagDefaultCategories();
         state.transactions = Array.isArray(d.transactions) ? d.transactions : [];
         state.currency = d.currency || "ر.س";
         state.budgets = (d.budgets && typeof d.budgets === "object") ? d.budgets : {};
         save();
         $("#currencyPick").value = state.currency;
-        toast("تمت الاستعادة ✓");
+        toast(t("toast.restored"));
         renderAll();
       }catch(err){
-        toast("تعذّر قراءة الملف");
+        toast(t("toast.readFailed"));
       }
     };
     reader.readAsText(file);
@@ -1288,6 +1711,14 @@
       renderAll();
     });
 
+    $("#langPick").addEventListener("change", e => {
+      const v = e.target.value;
+      lang = LANGS.indexOf(v) >= 0 ? v : "ar";
+      try{ localStorage.setItem(LANG_KEY, lang); }catch(err){}
+      applyStatic();
+      renderAll();
+    });
+
     $("#typeSeg").addEventListener("click", e => {
       const b = e.target.closest(".segbtn");
       if(!b) return;
@@ -1310,7 +1741,7 @@
       else delete state.budgets[id];
       save();
       renderAll();
-      toast(v > 0 ? "تم حفظ الميزانية ✓" : "تم إلغاء ميزانية هذا التصنيف");
+      toast(v > 0 ? t("toast.budgetSaved") : t("toast.budgetCleared"));
     });
 
     document.addEventListener("click", e => {
@@ -1325,16 +1756,16 @@
     });
 
     $("#btnCopyReport").addEventListener("click", () => {
-      copyText(reportText(reportData()), "تم نسخ التقرير — الصقه حيث تحتاج ✓");
+      copyText(reportText(reportData()), t("toast.reportCopied"));
     });
     $("#btnCopyCsv").addEventListener("click", () => {
-      copyText(csvOfMonth(), "تم نسخ الحركات بصيغة CSV ✓");
+      copyText(csvOfMonth(), t("toast.csvCopied"));
     });
     $("#btnDownloadCsv").addEventListener("click", () => {
-      if(!txsOfMonth().length){ toast("لا توجد حركات في هذا الشهر"); return; }
+      if(!txsOfMonth().length){ toast(t("toast.noTxMonth")); return; }
       // BOM لضمان ظهور العربية بشكل سليم في Excel
-      download("حركات-" + currentMonth + ".csv", "\ufeff" + csvOfMonth(), "text/csv;charset=utf-8");
-      toast("تم تنزيل الملف ✓");
+      download("transactions-" + currentMonth + ".csv", "\ufeff" + csvOfMonth(), "text/csv;charset=utf-8");
+      toast(t("toast.fileDownloaded"));
     });
     $("#btnPrint").addEventListener("click", () => window.print());
 
@@ -1347,8 +1778,27 @@
     });
   }
 
+  /* ================= تطبيق اللغة ================= */
+  function applyStatic(){
+    document.documentElement.lang = lang;
+    document.documentElement.dir = (lang === "ar") ? "rtl" : "ltr";
+    document.title = t("doc.title");
+    $$("[data-i18n]").forEach(el => { el.textContent = t(el.getAttribute("data-i18n")); });
+    $$("[data-i18n-ph]").forEach(el => { el.placeholder = t(el.getAttribute("data-i18n-ph")); });
+
+    const langSel = $("#langPick");
+    if(langSel) langSel.value = lang;
+
+    const pick = $("#currencyPick");
+    if(pick){
+      pick.innerHTML = CUR_INFO.map(c => '<option value="' + esc(c.code) + '">' + esc(c[lang] || c.en) + '</option>').join("");
+      pick.value = state.currency;
+    }
+  }
+
   /* ================= بدء ================= */
   load();
+  applyStatic();
   $("#monthPick").value = currentMonth;
   $("#fDate").value = todayISO();
   bind();
