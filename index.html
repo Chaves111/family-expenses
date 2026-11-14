@@ -229,6 +229,34 @@
   }
   .toast.show{opacity:1;transform:none}
 
+  /* ---------- مسح الفاتورة ---------- */
+  .scanrow{
+    display:grid;grid-template-columns:26px 1fr 104px 150px;gap:10px;align-items:center;
+    padding:9px 0;border-bottom:1px solid #f4f1ea;
+  }
+  .scanrow:last-child{border-bottom:0}
+  .scanrow input[type="checkbox"]{width:18px;height:18px;accent-color:var(--accent)}
+  .scanrow input,.scanrow select{font-size:.85rem;padding:7px 9px}
+  .scanrow .scan-desc{min-width:0}
+  .scan-head{
+    display:grid;grid-template-columns:26px 1fr 104px 150px;gap:10px;
+    font-size:.72rem;color:var(--muted);padding:0 0 6px;font-weight:600;
+  }
+  #scanPreview img{
+    max-width:100%;max-height:260px;border-radius:12px;border:1px solid var(--line);
+    display:block;margin-top:10px;
+  }
+  .scan-total{
+    display:flex;justify-content:space-between;gap:10px;align-items:center;
+    margin-top:14px;padding:10px 12px;background:#faf8f3;border:1px solid var(--line);
+    border-radius:10px;font-size:.9rem;font-weight:600;
+  }
+  @media (max-width:700px){
+    .scanrow,.scan-head{grid-template-columns:24px 1fr;grid-auto-rows:auto}
+    .scan-head{display:none}
+    .scanrow select,.scanrow .scan-amt{grid-column:2}
+  }
+
   /* ---------- LTR (English / French) ---------- */
   html[dir="ltr"] th, html[dir="ltr"] td{text-align:left}
   html[dir="ltr"] pre.report{direction:ltr;text-align:left}
@@ -289,6 +317,7 @@
     <button class="tabbtn" data-tab="report" data-i18n="tab.report">التقرير الشهري</button>
     <button class="tabbtn" data-tab="members" data-i18n="tab.members">أفراد العائلة</button>
     <button class="tabbtn" data-tab="cats" data-i18n="tab.cats">التصنيفات</button>
+    <button class="tabbtn" data-tab="scan" data-i18n="tab.scan">مسح فاتورة</button>
   </nav>
 
   <!-- ============ HOME ============ -->
@@ -482,6 +511,51 @@
       <div class="note" data-i18n="backup.note">البيانات محفوظة داخل هذا المتصفح فقط. مسح بيانات المتصفح يمسح الحركات، لذا احتفظ بنسخة احتياطية من وقت لآخر.</div>
     </div>
   </section>
+
+  <!-- ============ SCAN INVOICE ============ -->
+  <section class="tabpane" id="tab-scan">
+    <div class="card">
+      <h2 data-i18n="scan.title">قراءة فاتورة أو إيصال</h2>
+      <p class="sub" data-i18n="scan.sub">صوّر الفاتورة أو حمّل صورتها، فيقرأ التطبيق البنود والمبالغ ويقترح تصنيفًا لكل بند. راجع النتيجة قبل الحفظ.</p>
+      <div class="row-actions no-print" style="margin-top:4px">
+        <button class="primary" id="btnCamera" data-i18n="scan.takePhoto">📷 تصوير الفاتورة</button>
+        <button class="ghost" id="btnUploadInvoice" data-i18n="scan.upload">⬆ تحميل صورة</button>
+        <input type="file" id="invoiceFile" accept="image/*" hidden>
+        <input type="file" id="invoiceCam" accept="image/*" capture="environment" hidden>
+      </div>
+      <div class="note" id="scanStatus" data-i18n="scan.ready">لم تختر صورة بعد.</div>
+      <div id="scanPreview"></div>
+      <p class="sub" style="margin-top:12px" data-i18n="scan.engineNote">المرة الأولى تحتاج اتصالًا بالإنترنت لتحميل محرّك القراءة، ثم يبقى في ذاكرة المتصفح.</p>
+    </div>
+
+    <div class="card" id="scanReviewCard" hidden>
+      <div class="section-title">
+        <h2 data-i18n="scan.reviewTitle">مراجعة البنود المقروءة</h2>
+        <span class="pill" id="scanCount">0</span>
+      </div>
+      <div class="grid2">
+        <label class="fld"><span data-i18n="scan.date">تاريخ الحركات</span>
+          <input type="date" id="scanDate">
+        </label>
+        <label class="fld"><span data-i18n="scan.member">الفرد</span>
+          <select id="scanMember"></select>
+        </label>
+      </div>
+      <div class="scan-head">
+        <span></span>
+        <span data-i18n="scan.colItem">البند</span>
+        <span data-i18n="scan.colAmount">المبلغ</span>
+        <span data-i18n="scan.colCategory">التصنيف</span>
+      </div>
+      <div id="scanItems"></div>
+      <div class="scan-total"><span data-i18n="scan.totalSelected">إجمالي البنود المحددة</span><span id="scanTotal">0</span></div>
+      <div class="row-actions no-print" style="margin-top:14px">
+        <button class="primary" id="btnScanAdd" data-i18n="scan.addSelected">＋ إضافة الحركات المحددة</button>
+        <button class="ghost" id="btnScanNewCat" data-i18n="scan.addCat">＋ تصنيف جديد</button>
+      </div>
+      <div class="note" data-i18n="scan.privacy">تُقرأ الصورة داخل جهازك ولا تُرفع إلى أي خادم. القراءة الآلية قد تخطئ، فصحّح المبالغ قبل الإضافة.</div>
+    </div>
+  </section>
 </div>
 
 <div class="toast" id="toast"></div>
@@ -623,6 +697,34 @@
       "rt.memberLine": "- {label}: دخل {inc} | مصروف {exp} | صافي {net} | {n} حركة",
       "rt.detail": "تفصيل الحركات:", "rt.noTx": "- لا توجد حركات",
       "rt.txLine": "- {date} | {type} | {cat} | {member} | {v} {cur}{note}",
+      "tab.scan": "مسح فاتورة",
+      "scan.title": "قراءة فاتورة أو إيصال",
+      "scan.sub": "صوّر الفاتورة أو حمّل صورتها، فيقرأ التطبيق البنود والمبالغ ويقترح تصنيفًا لكل بند. راجع النتيجة قبل الحفظ.",
+      "scan.takePhoto": "📷 تصوير الفاتورة",
+      "scan.upload": "⬆ تحميل صورة",
+      "scan.engineNote": "المرة الأولى تحتاج اتصالًا بالإنترنت لتحميل محرّك القراءة، ثم يبقى في ذاكرة المتصفح.",
+      "scan.ready": "لم تختر صورة بعد.",
+      "scan.reading": "جارٍ قراءة الصورة… قد يستغرق نصف دقيقة.",
+      "scan.progress": "جارٍ قراءة الصورة… {p}%",
+      "scan.engineLoading": "جارٍ تحميل محرّك القراءة للمرة الأولى…",
+      "scan.none": "لم أتمكن من قراءة أي بند. جرّب صورة أوضح أو أضف الحركة يدويًا.",
+      "scan.found": "تم العثور على {n} بند. راجع التصنيفات والمبالغ قبل الإضافة.",
+      "scan.reviewTitle": "مراجعة البنود المقروءة",
+      "scan.colItem": "البند",
+      "scan.colAmount": "المبلغ",
+      "scan.colCategory": "التصنيف",
+      "scan.date": "تاريخ الحركات",
+      "scan.member": "الفرد",
+      "scan.totalSelected": "إجمالي البنود المحددة",
+      "scan.addSelected": "＋ إضافة الحركات المحددة",
+      "scan.addCat": "＋ تصنيف جديد",
+      "scan.added": "تمت إضافة {n} حركة من الفاتورة ✓",
+      "scan.nothingSelected": "حدّد بندًا واحدًا على الأقل بمبلغ صحيح",
+      "scan.error": "تعذّر تحميل محرّك قراءة الصور. تحقق من الاتصال بالإنترنت ثم أعد المحاولة.",
+      "scan.privacy": "تُقرأ الصورة داخل جهازك ولا تُرفع إلى أي خادم. القراءة الآلية قد تخطئ، فصحّح المبالغ قبل الإضافة.",
+      "scan.imgError": "تعذّر فتح الصورة.",
+      "scan.newCatName": "اسم التصنيف الجديد",
+      "scan.removed": "تم إلغاء قراءة الفاتورة",
       "cat.food": "طعام وشراب", "cat.transport": "مواصلات", "cat.bills": "فواتير ومرافق",
       "cat.housing": "سكن وإيجار", "cat.health": "صحة", "cat.education": "تعليم",
       "cat.clothes": "ملابس", "cat.leisure": "ترفيه", "cat.otherExpense": "مصاريف أخرى",
@@ -742,6 +844,34 @@
       "rt.memberLine": "- {label}: income {inc} | expenses {exp} | net {net} | {n} entries",
       "rt.detail": "Transaction details:", "rt.noTx": "- No transactions",
       "rt.txLine": "- {date} | {type} | {cat} | {member} | {v} {cur}{note}",
+      "tab.scan": "Scan invoice",
+      "scan.title": "Read a receipt or invoice",
+      "scan.sub": "Photograph the receipt or upload its image: the app reads the line items and amounts and suggests a category for each one. Review the result before saving.",
+      "scan.takePhoto": "📷 Take a photo",
+      "scan.upload": "⬆ Upload an image",
+      "scan.engineNote": "The first time needs an internet connection to download the reading engine; after that it stays in your browser cache.",
+      "scan.ready": "No image selected yet.",
+      "scan.reading": "Reading the image… this can take half a minute.",
+      "scan.progress": "Reading the image… {p}%",
+      "scan.engineLoading": "Loading the reading engine for the first time…",
+      "scan.none": "I could not read any line item. Try a clearer photo or add the transaction manually.",
+      "scan.found": "Found {n} line items. Check the categories and amounts before adding.",
+      "scan.reviewTitle": "Review the detected items",
+      "scan.colItem": "Item",
+      "scan.colAmount": "Amount",
+      "scan.colCategory": "Category",
+      "scan.date": "Transaction date",
+      "scan.member": "Member",
+      "scan.totalSelected": "Total of selected items",
+      "scan.addSelected": "＋ Add selected transactions",
+      "scan.addCat": "＋ New category",
+      "scan.added": "Added {n} transactions from the invoice ✓",
+      "scan.nothingSelected": "Select at least one item with a valid amount",
+      "scan.error": "Could not load the image-reading engine. Check your internet connection and try again.",
+      "scan.privacy": "The image is read on your own device and never uploaded to any server. Automatic reading can make mistakes, so correct the amounts before adding.",
+      "scan.imgError": "Could not open the image.",
+      "scan.newCatName": "New category name",
+      "scan.removed": "Invoice reading cancelled",
       "cat.food": "Food & drink", "cat.transport": "Transport", "cat.bills": "Bills & utilities",
       "cat.housing": "Housing & rent", "cat.health": "Health", "cat.education": "Education",
       "cat.clothes": "Clothing", "cat.leisure": "Leisure", "cat.otherExpense": "Other expenses",
@@ -861,6 +991,34 @@
       "rt.memberLine": "- {label} : revenus {inc} | dépenses {exp} | net {net} | {n} transactions",
       "rt.detail": "Détail des transactions :", "rt.noTx": "- Aucune transaction",
       "rt.txLine": "- {date} | {type} | {cat} | {member} | {v} {cur}{note}",
+      "tab.scan": "Scanner une facture",
+      "scan.title": "Lire un reçu ou une facture",
+      "scan.sub": "Photographiez le reçu ou importez son image : l'application lit les articles et les montants et propose une catégorie pour chacun. Vérifiez le résultat avant d'enregistrer.",
+      "scan.takePhoto": "📷 Prendre une photo",
+      "scan.upload": "⬆ Importer une image",
+      "scan.engineNote": "La première fois, une connexion internet est nécessaire pour télécharger le moteur de lecture ; ensuite il reste dans le cache du navigateur.",
+      "scan.ready": "Aucune image sélectionnée.",
+      "scan.reading": "Lecture de l'image… cela peut prendre une trentaine de secondes.",
+      "scan.progress": "Lecture de l'image… {p} %",
+      "scan.engineLoading": "Chargement du moteur de lecture pour la première fois…",
+      "scan.none": "Je n'ai lu aucun article. Essayez une photo plus nette ou ajoutez la transaction manuellement.",
+      "scan.found": "{n} articles détectés. Vérifiez les catégories et les montants avant d'ajouter.",
+      "scan.reviewTitle": "Vérifier les articles détectés",
+      "scan.colItem": "Article",
+      "scan.colAmount": "Montant",
+      "scan.colCategory": "Catégorie",
+      "scan.date": "Date des transactions",
+      "scan.member": "Membre",
+      "scan.totalSelected": "Total des articles sélectionnés",
+      "scan.addSelected": "＋ Ajouter les transactions sélectionnées",
+      "scan.addCat": "＋ Nouvelle catégorie",
+      "scan.added": "{n} transactions ajoutées depuis la facture ✓",
+      "scan.nothingSelected": "Sélectionnez au moins un article avec un montant valide",
+      "scan.error": "Impossible de charger le moteur de lecture d'images. Vérifiez votre connexion puis réessayez.",
+      "scan.privacy": "L'image est lue sur votre appareil et n'est jamais envoyée à un serveur. La lecture automatique peut se tromper : corrigez les montants avant d'ajouter.",
+      "scan.imgError": "Impossible d'ouvrir l'image.",
+      "scan.newCatName": "Nom de la nouvelle catégorie",
+      "scan.removed": "Lecture de la facture annulée",
       "cat.food": "Alimentation", "cat.transport": "Transport", "cat.bills": "Factures et charges",
       "cat.housing": "Logement et loyer", "cat.health": "Santé", "cat.education": "Éducation",
       "cat.clothes": "Vêtements", "cat.leisure": "Loisirs", "cat.otherExpense": "Autres dépenses",
@@ -1717,6 +1875,7 @@
       try{ localStorage.setItem(LANG_KEY, lang); }catch(err){}
       applyStatic();
       renderAll();
+      if(scanRows.length) renderScanRows();
     });
 
     $("#typeSeg").addEventListener("click", e => {
@@ -1778,6 +1937,293 @@
     });
   }
 
+  /* ================= مسح الفاتورة (قراءة الصور) ================= */
+  const SCAN_RULES = [
+    { key: "cat.food", words: ["مطعم","بقالة","سوق","خبز","لحم","دجاج","سمك","فواكه","خضار","قهوة","حلويات","سوبرماركت","بقالة","مقهى","بوفيه","عصير","تمر","أرز","رز","حليب","بيض","جبن","زبدة","سكر","ملح","زيت","طحين","معكرونة","طماطم","بطاطس","بصل","تفاح","موز","برتقال","مكسرات","عسل","شاي","شوكولاتة","بسكويت","مخبز","فول","Restaurant","market","grocery","supermarket","bakery","butcher","food","cafe","coffee","carrefour","panda","lulu","danube","milk","bread","chicken","meat","beef","lamb","fish","rice","egg","cheese","yogurt","butter","sugar","salt","oil","flour","pasta","tomato","potato","onion","apple","banana","orange","fruit","vegetable","dates","nuts","honey","tea","juice","chocolate","biscuit","snack","boulangerie","épicerie","boucherie","viande","poisson","légumes","fruits","café","pâtisserie","lait","pain","poulet","fromage","beurre","sucre","farine","pâtes","tomates","pommes","dattes","miel","thé","jus","chocolat","biscuits"] },
+    { key: "cat.transport", words: ["بنزين","وقود","محطة","تاكسي","أوبر","كريم","مواصلات","باص","حافلة","قطار","مترو","باركن","غسيل","صيانة سيارة","diesel","fuel","petrol","gas","taxi","uber","careem","parking","bus","train","metro","toll","essence","carburant","péage","lavage"] },
+    { key: "cat.bills", words: ["كهرباء","مياه","ماء","غاز","إنترنت","انترنت","هاتف","جوال","اتصالات","فاتورة","stc","موبايلي","زين","ألياف","electricity","water","internet","phone","mobile","telecom","fiber","bill","facture","électricité","eau","téléphone","portable"] },
+    { key: "cat.housing", words: ["إيجار","سكن","شقة","عقار","غسيل","مغسلة","تنظيف","rent","housing","apartment","loyer","logement","charges","laundry","cleaning","pressing","blanchisserie","ménage"] },
+    { key: "cat.health", words: ["صيدلية","دواء","مستشفى","عيادة","طبيب","تحاليل","أشعة","أسنان","pharmacy","medicine","hospital","clinic","doctor","dental","pharmacie","médecin","hôpital","dentiste","médicament"] },
+    { key: "cat.education", words: ["مدرسة","جامعة","رسوم","كتب","قرطاسية","دورة","دورات","حضانة","school","university","tuition","books","stationery","course","nursery","école","université","scolarité","livres","fournitures","cours"] },
+    { key: "cat.clothes", words: ["ملابس","حذاء","قميص","بنطال","عباءة","أزياء","جاكيت","clothing","clothes","shoes","shirt","trousers","dress","fashion","jacket","vêtements","chaussures","chemise","pantalon","robe"] },
+    { key: "cat.leisure", words: ["سينما","ترفيه","لعبة","ألعاب","ملاهي","اشتراك","نتفليكس","شاهد","cinema","entertainment","game","ticket","subscription","netflix","spotify","loisirs","cinéma","jeu","abonnement","billetterie"] }
+  ];
+
+  const SCAN_SKIP = /(\btotal\b|\bsubtotal\b|الإجمالي|المجموع|الضريبة|قيمة مضافة|\btax\b|\bvat\b|\btva\b|\bchange\b|الباقي|المتبقي|\bcash\b|\bcard\b|شبكة|نقدا|شكرا|شكرًا|\bthank\b|\bmerci\b|\binvoice\b|\bfacture\b|\breceipt\b|فاتورة\s*$|(^|\s)رقم\s*$|(^|\s)الرقم\s*$|رقم\s*ال(فاتورة|إيصال|ايصال)|\bno\.?\s*$|\bdate\b|التاريخ|\btime\b|الساعة|الكمية|\bqty\b|الصنف|\bsku\b)/i;
+
+  let scanRows = [];
+  let tesseractLoader = null;
+
+  function setScanStatus(msg, kind){
+    const el = $("#scanStatus");
+    if(!el) return;
+    el.className = kind === "danger" ? "alertbox danger" : (kind === "warn" ? "alertbox warn" : "note");
+    el.textContent = msg;
+  }
+
+  function loadTesseract(){
+    if(window.Tesseract) return Promise.resolve(window.Tesseract);
+    if(tesseractLoader) return tesseractLoader;
+    tesseractLoader = new Promise((resolve, reject) => {
+      const s = document.createElement("script");
+      s.src = "https://cdn.jsdelivr.net/npm/tesseract.js@5.1.1/dist/tesseract.min.js";
+      s.async = true;
+      s.onload = () => window.Tesseract ? resolve(window.Tesseract) : reject(new Error("noTesseract"));
+      s.onerror = () => { tesseractLoader = null; reject(new Error("loadFailed")); };
+      document.head.appendChild(s);
+    });
+    return tesseractLoader;
+  }
+
+  function parseAmount(raw){
+    let s = String(raw).replace(/[^\d.,\s]/g, "").trim();
+    if(!s) return 0;
+    // قد يقرأ المحرّك الفاصلة العشرية كمسافة: «22 50» تعني 22.50
+    if(/^\d+\s\d{1,2}$/.test(s)) s = s.replace(/\s+/, ".");
+    else s = s.replace(/\s/g, "");
+    const lc = s.lastIndexOf(","), ld = s.lastIndexOf(".");
+    if(lc > -1 && ld > -1){
+      if(lc > ld) s = s.replace(/\./g, "").replace(",", ".");
+      else s = s.replace(/,/g, "");
+    }else if(lc > -1){
+      const parts = s.split(",");
+      s = (parts.length === 2 && parts[1].length === 3) ? parts.join("") : s.replace(",", ".");
+    }else if(ld > -1){
+      const parts = s.split(".");
+      if(parts.length > 2 && parts[parts.length - 1].length === 3) s = parts.join("");
+    }
+    return Number(s) || 0;
+  }
+
+  function classifyCategoryId(label){
+    const text = String(label).toLowerCase();
+    const cats = state.categories.filter(c => c.type === "expense");
+    if(!cats.length) return "";
+    const rule = SCAN_RULES.filter(r => r.words.some(w => text.indexOf(String(w).toLowerCase()) > -1))[0];
+    if(rule){
+      const hit = cats.filter(c => c.key === rule.key)[0];
+      if(hit) return hit.id;
+    }
+    const direct = cats.filter(c => {
+      const n = (c.key ? t(c.key) : c.name).toLowerCase();
+      return n.length > 2 && text.indexOf(n) > -1;
+    })[0];
+    if(direct) return direct.id;
+    return (cats.filter(c => c.key === "cat.otherExpense")[0] || cats[cats.length - 1]).id;
+  }
+
+  function normalizeDigits(text){
+    return String(text || "")
+      .replace(/[\u0660-\u0669]/g, ch => String(ch.charCodeAt(0) - 0x0660))
+      .replace(/[\u06F0-\u06F9]/g, ch => String(ch.charCodeAt(0) - 0x06F0))
+      .replace(/\u066B/g, ".")
+      .replace(/\u066C/g, ",");
+  }
+
+  function parseReceiptText(text){
+    const lines = normalizeDigits(text).split(/\r?\n/).map(l => l.replace(/\s+/g, " ").trim()).filter(Boolean);
+    const rows = [];
+    lines.forEach(line => {
+      const m = line.match(/(\d[\d\s.,]*)\s*(?:ر\.س|ريال|درهم|دينار|SAR|AED|USD|EUR|\$|€|£|DH|Dhs)?\s*$/i);
+      if(!m || m.index === 0) return;
+      const amount = parseAmount(m[1]);
+      if(!(amount > 0) || amount > 1000000) return;
+      let label = line.slice(0, m.index).replace(/[\s:;*·\-\u2013\u2014]+$/g, "").trim();
+      label = label.replace(/^[\d\s.:;\-*\u2022]+/, "").trim();
+      if(label.length < 2) return;
+      if(/^[\d\s.,:;\/\-]+$/.test(label)) return;
+      if(SCAN_SKIP.test(label)) return;
+      rows.push({ label: label, amount: amount, categoryId: classifyCategoryId(label), include: true });
+    });
+    const seen = {};
+    return rows.filter(r => {
+      const k = r.label.toLowerCase() + "|" + r.amount;
+      if(seen[k]) return false;
+      seen[k] = 1;
+      return true;
+    }).slice(0, 50);
+  }
+
+  function fileToScanImage(file){
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onerror = () => reject(new Error("read"));
+      reader.onload = () => {
+        const img = new Image();
+        img.onerror = () => reject(new Error("image"));
+        img.onload = () => {
+          const maxW = 1500;
+          const scale = img.width > maxW ? maxW / img.width : 1;
+          const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+          const canvas = document.createElement("canvas");
+          canvas.width = w; canvas.height = h;
+          const ctx = canvas.getContext("2d");
+          ctx.drawImage(img, 0, 0, w, h);
+          try{
+            const data = ctx.getImageData(0, 0, w, h);
+            const px = data.data;
+            for(let i = 0; i < px.length; i += 4){
+              const g = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
+              const v = g > 165 ? 255 : (g < 90 ? 0 : Math.round(Math.min(255, (g - 90) * 255 / 75)));
+              px[i] = px[i + 1] = px[i + 2] = v;
+            }
+            ctx.putImageData(data, 0, 0);
+          }catch(e){}
+          resolve(canvas.toDataURL("image/jpeg", 0.85));
+        };
+        img.src = String(reader.result);
+      };
+      reader.readAsDataURL(file);
+    });
+  }
+
+  async function readInvoice(file){
+    if(!file) return;
+    scanRows = [];
+    $("#scanReviewCard").hidden = true;
+    $("#scanPreview").innerHTML = "";
+    setScanStatus(t("scan.reading"));
+    try{
+      const dataUrl = await fileToScanImage(file);
+      $("#scanPreview").innerHTML = '<img src="' + dataUrl + '" alt="">';
+      setScanStatus(t("scan.engineLoading"));
+      const Tesseract = await loadTesseract();
+      const ocrLang = lang === "ar" ? "ara+eng" : (lang === "fr" ? "fra+eng" : "eng");
+      const res = await Tesseract.recognize(dataUrl, ocrLang, {
+        logger: m => {
+          if(m && m.status === "recognizing text"){
+            setScanStatus(t("scan.progress", { p: Math.round((m.progress || 0) * 100) }));
+          }
+        }
+      });
+      const rows = parseReceiptText(res && res.data ? res.data.text : "");
+      if(!rows.length){
+        setScanStatus(t("scan.none"), "warn");
+        return;
+      }
+      scanRows = rows;
+      $("#scanDate").value = todayISO();
+      $("#scanReviewCard").hidden = false;
+      setScanStatus(tn("scan.found", rows.length, { n: rows.length }));
+      renderScanRows();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }catch(err){
+      setScanStatus(t("scan.error"), "danger");
+    }
+  }
+
+  function scanCatOptions(selected){
+    return state.categories.filter(c => c.type === "expense").map(c =>
+      '<option value="' + esc(c.id) + '"' + (c.id === selected ? " selected" : "") + '>' + esc(c.key ? t(c.key) : c.name) + '</option>'
+    ).join("");
+  }
+
+  function renderScanMemberOptions(){
+    const sel = $("#scanMember");
+    if(!sel) return;
+    const prev = sel.value;
+    sel.innerHTML = '<option value="">— ' + esc(t("misc.wholeFamily")) + ' —</option>' +
+      state.members.map(m => '<option value="' + esc(m.id) + '">' + esc(m.name) + '</option>').join("");
+    if(prev) sel.value = prev;
+  }
+
+  function updateScanTotal(){
+    const total = round2(scanRows.filter(r => r.include).reduce((a, r) => a + num(r.amount), 0));
+    $("#scanTotal").textContent = fmt(total) + " " + cur();
+  }
+
+  function renderScanRows(){
+    const el = $("#scanItems");
+    if(!el) return;
+    $("#scanCount").textContent = tn("count.tx", scanRows.length, { n: scanRows.length });
+    el.innerHTML = scanRows.length ? scanRows.map((r, i) =>
+      '<div class="scanrow">' +
+        '<input type="checkbox" data-scan-inc="' + i + '"' + (r.include ? " checked" : "") + ' aria-label="' + esc(r.label) + '">' +
+        '<input class="scan-desc" type="text" maxlength="90" data-scan-desc="' + i + '" value="' + esc(r.label) + '">' +
+        '<input class="scan-amt" type="number" min="0" step="0.01" data-scan-amt="' + i + '" value="' + r.amount + '">' +
+        '<select data-scan-cat="' + i + '">' + scanCatOptions(r.categoryId) + '</select>' +
+      '</div>'
+    ).join("") : '<p class="empty">' + esc(t("empty.noTx")) + '</p>';
+    renderScanMemberOptions();
+    updateScanTotal();
+  }
+
+  function addScannedRows(){
+    const date = $("#scanDate").value || todayISO();
+    const memberId = $("#scanMember").value || "";
+    const chosen = scanRows.filter(r => r.include && num(r.amount) > 0 && r.categoryId);
+    if(!chosen.length){ toast(t("scan.nothingSelected")); return; }
+    chosen.forEach(r => {
+      state.transactions.push({
+        id: uid(),
+        type: "expense",
+        amount: round2(r.amount),
+        date: date,
+        categoryId: r.categoryId,
+        memberId: memberId,
+        note: String(r.label).slice(0, 120),
+        createdAt: Date.now()
+      });
+    });
+    save();
+    toast(t("scan.added", { n: chosen.length }));
+    scanRows = [];
+    $("#scanItems").innerHTML = "";
+    $("#scanCount").textContent = "0";
+    $("#scanPreview").innerHTML = "";
+    $("#scanReviewCard").hidden = true;
+    setScanStatus(t("scan.ready"));
+    renderAll();
+  }
+
+  function addScanCategory(){
+    const name = (window.prompt(t("scan.newCatName")) || "").trim();
+    if(!name) return;
+    if(state.categories.some(c => c.type === "expense" && c.name.toLowerCase() === name.toLowerCase())){
+      toast(t("toast.catExists")); return;
+    }
+    const color = PALETTE[state.categories.length % PALETTE.length];
+    const cat = { id: uid(), name: name, type: "expense", color: color };
+    state.categories.push(cat);
+    const otherId = (state.categories.filter(c => c.key === "cat.otherExpense")[0] || {}).id;
+    scanRows.forEach(r => { if(!r.categoryId || r.categoryId === otherId) r.categoryId = cat.id; });
+    save();
+    toast(t("toast.catAdded"));
+    renderAll();
+    renderScanRows();
+  }
+
+  function bindScan(){
+    $("#btnCamera").addEventListener("click", () => $("#invoiceCam").click());
+    $("#btnUploadInvoice").addEventListener("click", () => $("#invoiceFile").click());
+    $("#invoiceCam").addEventListener("change", e => {
+      const f = e.target.files && e.target.files[0];
+      e.target.value = "";
+      readInvoice(f);
+    });
+    $("#invoiceFile").addEventListener("change", e => {
+      const f = e.target.files && e.target.files[0];
+      e.target.value = "";
+      readInvoice(f);
+    });
+    $("#scanItems").addEventListener("input", e => {
+      const el = e.target;
+      const d = el.getAttribute("data-scan-desc");
+      const a = el.getAttribute("data-scan-amt");
+      if(d !== null && scanRows[+d]) scanRows[+d].label = el.value;
+      if(a !== null && scanRows[+a]){ scanRows[+a].amount = round2(el.value); updateScanTotal(); }
+    });
+    $("#scanItems").addEventListener("change", e => {
+      const el = e.target;
+      const inc = el.getAttribute("data-scan-inc");
+      const cat = el.getAttribute("data-scan-cat");
+      if(inc !== null && scanRows[+inc]){ scanRows[+inc].include = el.checked; updateScanTotal(); }
+      if(cat !== null && scanRows[+cat]) scanRows[+cat].categoryId = el.value;
+    });
+    $("#btnScanAdd").addEventListener("click", addScannedRows);
+    $("#btnScanNewCat").addEventListener("click", addScanCategory);
+  }
+
   /* ================= تطبيق اللغة ================= */
   function applyStatic(){
     document.documentElement.lang = lang;
@@ -1802,6 +2248,7 @@
   $("#monthPick").value = currentMonth;
   $("#fDate").value = todayISO();
   bind();
+  bindScan();
   renderAll();
 })();
 </script>
