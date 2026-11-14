@@ -1,0 +1,1359 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>مصاريف ومداخيل العائلة</title>
+<meta name="description" content="تطبيق لإدارة مصاريف ومداخيل العائلة: أفراد، تصنيفات، تقرير شهري، ورسم بياني دائري.">
+<meta name="theme-color" content="#0f766e">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="مصاريف العائلة">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="apple-touch-icon" href="./icons/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="./icons/icon-192.png">
+<style>
+  :root{
+    --bg:#f6f3ec;
+    --card:#ffffff;
+    --ink:#1f2a37;
+    --muted:#6b7280;
+    --line:#e9e3d6;
+    --accent:#0f766e;
+    --accent-soft:#d9f0ec;
+    --expense:#c2410c;
+    --income:#15803d;
+    --shadow:0 1px 2px rgba(16,24,40,.05), 0 8px 24px -12px rgba(16,24,40,.18);
+    --radius:16px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Segoe UI", Tahoma, "Noto Naskh Arabic", "Geeza Pro", system-ui, sans-serif;
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px 64px}
+
+  /* ---------- header ---------- */
+  header.top{
+    background:linear-gradient(135deg,#0f766e,#115e59 60%,#134e4a);
+    color:#f0fdfa;
+    padding:26px 16px 30px;
+    border-radius:0 0 28px 28px;
+    box-shadow:0 10px 30px -18px rgba(15,118,110,.9);
+  }
+  .top-inner{max-width:1080px;margin:0 auto;display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end;justify-content:space-between}
+  .brand h1{margin:0;font-size:1.35rem;letter-spacing:.2px}
+  .brand p{margin:2px 0 0;font-size:.85rem;color:#a7f3d0}
+  .top-tools{display:flex;gap:10px;flex-wrap:wrap}
+  .top-tools label{display:flex;flex-direction:column;font-size:.72rem;color:#a7f3d0;gap:3px}
+  .top-tools input,.top-tools select{
+    background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.28);
+    color:#f0fdfa;
+    border-radius:10px;
+    padding:8px 10px;
+    font-family:inherit;
+    font-size:.9rem;
+    min-width:130px;
+  }
+  .top-tools option{color:#1f2a37}
+  .top-tools input::-webkit-calendar-picker-indicator{filter:invert(1);opacity:.8}
+
+  /* ---------- tabs ---------- */
+  nav.tabs{
+    display:flex;gap:6px;overflow-x:auto;
+    background:var(--card);
+    border:1px solid var(--line);
+    padding:6px;
+    border-radius:14px;
+    margin:-18px 0 22px;
+    box-shadow:var(--shadow);
+    position:relative;z-index:2;
+  }
+  .tabbtn{
+    flex:1 0 auto;
+    background:transparent;border:0;border-radius:10px;
+    padding:10px 14px;font-family:inherit;font-size:.92rem;color:var(--muted);
+    cursor:pointer;white-space:nowrap;
+  }
+  .tabbtn:hover{background:#f2efe7;color:var(--ink)}
+  .tabbtn.active{background:var(--accent-soft);color:#0b4f49;font-weight:600}
+  .tabpane{display:none}
+  .tabpane.active{display:block;animation:fade .2s ease}
+  @keyframes fade{from{opacity:.4;transform:translateY(4px)}to{opacity:1;transform:none}}
+
+  /* ---------- cards ---------- */
+  .card{
+    background:var(--card);
+    border:1px solid var(--line);
+    border-radius:var(--radius);
+    padding:18px;
+    box-shadow:var(--shadow);
+    margin-bottom:18px;
+  }
+  .card h2{margin:0 0 4px;font-size:1.02rem}
+  .card .sub{margin:0 0 14px;font-size:.8rem;color:var(--muted)}
+
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+  .stat{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;box-shadow:var(--shadow)}
+  .stat .k{font-size:.75rem;color:var(--muted);margin-bottom:6px;display:block}
+  .stat .v{font-size:1.15rem;font-weight:700;font-variant-numeric:tabular-nums}
+  .stat .v small{font-size:.7rem;font-weight:500;color:var(--muted);margin-inline-start:4px}
+  .stat.exp .v{color:var(--expense)}
+  .stat.inc .v{color:var(--income)}
+  .stat.net .v{color:var(--accent)}
+
+  /* ---------- forms ---------- */
+  label.fld{display:flex;flex-direction:column;gap:5px;font-size:.8rem;color:var(--muted)}
+  input,select,textarea{
+    font-family:inherit;font-size:.95rem;color:var(--ink);
+    background:#fff;border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;
+  }
+  input:focus,select:focus{outline:2px solid #99d6cd;outline-offset:1px;border-color:var(--accent)}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px}
+  .mt12{margin-top:12px}
+  button{font-family:inherit;cursor:pointer}
+  .primary{
+    background:var(--accent);color:#fff;border:0;border-radius:10px;
+    padding:11px 18px;font-size:.95rem;font-weight:600;
+    transition:filter .15s;
+  }
+  .primary:hover{filter:brightness(1.08)}
+  .ghost{
+    background:#fff;color:var(--ink);border:1px solid var(--line);
+    border-radius:10px;padding:10px 14px;font-size:.88rem;
+  }
+  .ghost:hover{background:#f7f5ef}
+  .danger-ghost{color:#b91c1c;border-color:#f3d3d3}
+  .danger-ghost:hover{background:#fdf1f1}
+  .row-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:6px}
+  .seg{display:inline-flex;background:#f1eee6;border-radius:12px;padding:4px;gap:4px;margin-bottom:14px}
+  .segbtn{
+    border:0;background:transparent;border-radius:9px;padding:8px 22px;font-size:.9rem;color:var(--muted);font-weight:600;
+  }
+  .segbtn.active{background:#fff;color:var(--ink);box-shadow:0 1px 3px rgba(0,0,0,.12)}
+  .segbtn.active[data-type="expense"]{color:var(--expense)}
+  .segbtn.active[data-type="income"]{color:var(--income)}
+  .inline-form{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-end}
+  .inline-form .grow{flex:1 1 180px}
+
+  /* ---------- charts ---------- */
+  .charts{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  .chartcard{margin:0}
+  .chartbody{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+  .donutbox{flex:0 0 auto;display:flex;align-items:center;justify-content:center}
+  .donut-center-total{font-size:.62rem;fill:#6b7280}
+  .donut-center-val{font-size:13px;font-weight:700;fill:#1f2a37}
+  ul.legend{list-style:none;margin:0;padding:0;flex:1 1 170px;min-width:170px;display:flex;flex-direction:column;gap:7px}
+  ul.legend li{display:flex;align-items:center;gap:8px;font-size:.83rem}
+  ul.legend .dot{width:10px;height:10px;border-radius:3px;flex:0 0 auto}
+  ul.legend .lg-name{flex:1 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#374151}
+  ul.legend .lg-val{font-variant-numeric:tabular-nums;color:var(--muted);white-space:nowrap}
+  ul.legend .lg-pct{font-variant-numeric:tabular-nums;color:#9ca3af;width:34px;text-align:left;font-size:.76rem}
+  .empty{color:var(--muted);font-size:.85rem;padding:14px 0;text-align:center}
+
+  /* ---------- tables ---------- */
+  .tablewrap{overflow-x:auto;margin:0 -4px}
+  table{width:100%;border-collapse:collapse;font-size:.87rem}
+  th,td{padding:9px 8px;border-bottom:1px solid #f1eee6;text-align:right;white-space:nowrap}
+  th{font-size:.75rem;color:var(--muted);font-weight:600;background:#faf8f3}
+  th:first-child,td:first-child{padding-inline-start:12px}
+  th:last-child,td:last-child{padding-inline-end:12px}
+  tbody tr:hover{background:#fcfbf7}
+  td.num{font-variant-numeric:tabular-nums}
+  td.amount-exp{color:var(--expense);font-weight:600}
+  td.amount-inc{color:var(--income);font-weight:600}
+  .badge{display:inline-block;font-size:.7rem;padding:2px 8px;border-radius:999px;font-weight:600}
+  .badge.exp{background:#fdeee4;color:#9a3412}
+  .badge.inc{background:#e6f6ea;color:#166534}
+  .pill{background:#eef2f0;color:#41544f;border-radius:999px;padding:2px 9px;font-size:.75rem}
+  .iconbtn{
+    background:transparent;border:1px solid transparent;border-radius:8px;
+    color:#b91c1c;font-size:.8rem;padding:4px 8px;
+  }
+  .iconbtn:hover{background:#fdf1f1;border-color:#f3d3d3}
+  .chiplist{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+  .chip{
+    display:inline-flex;align-items:center;gap:8px;background:#faf8f3;border:1px solid var(--line);
+    border-radius:999px;padding:6px 8px 6px 12px;font-size:.85rem;
+  }
+  .chip .swatch{width:9px;height:9px;border-radius:50%}
+  .chip button{background:transparent;border:0;color:#9ca3af;font-size:.95rem;line-height:1;padding:2px 4px;border-radius:50%}
+  .chip button:hover{color:#b91c1c;background:#fdeaea}
+  .section-title{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:12px}
+  .section-title h2{margin:0}
+  .note{
+    background:#fffaf0;border:1px solid #f5e6c8;color:#7c5a17;
+    border-radius:10px;padding:10px 12px;font-size:.82rem;margin-top:12px;
+  }
+
+  /* ---------- الميزانيات ---------- */
+  .budget{padding:11px 0;border-bottom:1px solid #f4f1ea}
+  .budget:last-child{border-bottom:0;padding-bottom:2px}
+  .budget-top{display:flex;align-items:center;gap:10px;justify-content:space-between;flex-wrap:wrap;margin-bottom:6px}
+  .budget-name{display:flex;align-items:center;gap:8px;font-weight:600;font-size:.88rem}
+  .budget-name .dot{width:9px;height:9px;border-radius:3px;display:inline-block;flex:0 0 auto}
+  .budget-vals{color:#6b7280;font-variant-numeric:tabular-nums;font-size:.82rem}
+  .budget-vals strong{color:#1f2a37}
+  .bar{height:9px;background:#f1eee6;border-radius:999px;overflow:hidden}
+  .fill{height:100%;border-radius:999px;transition:width .3s}
+  .fill.ok{background:var(--accent)}
+  .fill.warn{background:#d97706}
+  .fill.over{background:#dc2626}
+  .budget-foot{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-top:7px;flex-wrap:wrap}
+  .budget-foot span{font-size:.78rem;color:#6b7280}
+  .budget-input{max-width:150px;padding:6px 10px;font-size:.85rem}
+  .alertbox{
+    border-radius:12px;padding:12px 14px;font-size:.88rem;margin-top:14px;line-height:1.65;
+  }
+  .alertbox.danger{background:#fef2f2;border:1px solid #fecaca;color:#991b1b}
+  .alertbox.warn{background:#fffbeb;border:1px solid #fde68a;color:#854d0e}
+  .alertbox[hidden]{display:none}
+  .alertbox + .alertbox{margin-top:8px}
+  pre.report{
+    background:#faf8f3;border:1px solid var(--line);border-radius:12px;
+    padding:14px;font-size:.82rem;line-height:1.75;
+    white-space:pre-wrap;word-break:break-word;max-height:340px;overflow:auto;
+    font-family:"Courier New", ui-monospace, monospace;direction:rtl;text-align:right;margin:0;
+  }
+  .toast{
+    position:fixed;inset-inline:0;bottom:24px;margin:0 auto;width:max-content;max-width:90vw;
+    background:#1f2a37;color:#fff;padding:11px 20px;border-radius:999px;font-size:.87rem;
+    box-shadow:0 10px 30px -10px rgba(0,0,0,.5);
+    opacity:0;transform:translateY(10px);transition:.25s;pointer-events:none;z-index:50;
+  }
+  .toast.show{opacity:1;transform:none}
+
+  @media (max-width:860px){
+    .charts{grid-template-columns:1fr}
+    .stats{grid-template-columns:1fr 1fr}
+  }
+  @media (max-width:560px){
+    .grid2{grid-template-columns:1fr}
+    .brand h1{font-size:1.15rem}
+    .card{padding:15px}
+    .stat .v{font-size:1rem}
+    th,td{padding:8px 6px;font-size:.8rem}
+  }
+  @media print{
+    header.top,nav.tabs,.no-print{display:none !important}
+    body{background:#fff}
+    .card{box-shadow:none;border-color:#ddd}
+    .tabpane{display:none !important}
+    .tabpane.active{display:block !important}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-inner">
+    <div class="brand">
+      <h1>💰 مصاريف ومداخيل العائلة</h1>
+      <p>كل بياناتك محفوظة في جهازك فقط، بدون حساب ولا إنترنت.</p>
+    </div>
+    <div class="top-tools">
+      <label>الشهر
+        <input type="month" id="monthPick">
+      </label>
+      <label>العملة
+        <select id="currencyPick">
+          <option value="ر.س">ريال سعودي (ر.س)</option>
+          <option value="د.إ">درهم إماراتي (د.إ)</option>
+          <option value="ج.م">جنيه مصري (ج.م)</option>
+          <option value="د.ك">دينار كويتي (د.ك)</option>
+          <option value="د.أ">دينار أردني (د.أ)</option>
+          <option value="ر.ع">ريال عماني (ر.ع)</option>
+          <option value="د.ب">دينار بحريني (د.ب)</option>
+          <option value="ر.ق">ريال قطري (ر.ق)</option>
+          <option value="د.ل">دينار ليبي (د.ل)</option>
+          <option value="د.ت">دينار تونسي (د.ت)</option>
+          <option value="د.ج">دينار جزائري (د.ج)</option>
+          <option value="د.م">درهم مغربي (د.م)</option>
+          <option value="ر.ي">ريال يمني (ر.ي)</option>
+          <option value="ل.ل">ليرة لبنانية (ل.ل)</option>
+          <option value="TL">ليرة تركية (TL)</option>
+          <option value="$">دولار ($)</option>
+          <option value="€">يورو (€)</option>
+        </select>
+      </label>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <nav class="tabs" id="tabs">
+    <button class="tabbtn active" data-tab="home">لوحة الشهر</button>
+    <button class="tabbtn" data-tab="tx">الحركات</button>
+    <button class="tabbtn" data-tab="report">التقرير الشهري</button>
+    <button class="tabbtn" data-tab="members">أفراد العائلة</button>
+    <button class="tabbtn" data-tab="cats">التصنيفات</button>
+  </nav>
+
+  <!-- ============ HOME ============ -->
+  <section class="tabpane active" id="tab-home">
+    <div class="stats" id="homeStats"></div>
+
+    <div class="card">
+      <div class="section-title">
+        <h2>حالة الميزانيات هذا الشهر</h2>
+        <button class="ghost no-print" data-goto="cats">تعديل الميزانيات ←</button>
+      </div>
+      <div id="homeAlerts"></div>
+    </div>
+
+    <div class="charts">
+      <div class="card chartcard">
+        <h2>المصاريف حسب التصنيف</h2>
+        <p class="sub" id="expChartSub">—</p>
+        <div class="chartbody" id="expChart"></div>
+      </div>
+      <div class="card chartcard">
+        <h2>المداخيل حسب التصنيف</h2>
+        <p class="sub" id="incChartSub">—</p>
+        <div class="chartbody" id="incChart"></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h2>توزيع الحركة على أفراد العائلة</h2>
+        <button class="ghost no-print" data-goto="report">التقرير الكامل ←</button>
+      </div>
+      <div id="homeMembers"></div>
+    </div>
+
+    <div class="card">
+      <div class="section-title">
+        <h2>أحدث الحركات</h2>
+        <button class="ghost no-print" data-goto="tx">كل الحركات ←</button>
+      </div>
+      <div id="homeRecent"></div>
+    </div>
+  </section>
+
+  <!-- ============ TRANSACTIONS ============ -->
+  <section class="tabpane" id="tab-tx">
+    <form class="card" id="txForm" autocomplete="off">
+      <h2>إضافة حركة جديدة</h2>
+      <p class="sub">الشهر المختار في الأعلى: <strong id="txMonthLabel">—</strong></p>
+
+      <div class="seg" id="typeSeg">
+        <button type="button" class="segbtn active" data-type="expense">مصروف</button>
+        <button type="button" class="segbtn" data-type="income">دخل</button>
+      </div>
+
+      <div class="grid2">
+        <label class="fld">المبلغ
+          <input id="fAmount" type="number" step="0.01" min="0" placeholder="0.00" required>
+        </label>
+        <label class="fld">التاريخ
+          <input id="fDate" type="date" required>
+        </label>
+        <label class="fld">التصنيف
+          <select id="fCat" required></select>
+        </label>
+        <label class="fld">الفرد (اختياري)
+          <select id="fMember"></select>
+        </label>
+      </div>
+      <label class="fld">ملاحظة (اختياري)
+        <input id="fNote" type="text" maxlength="120" placeholder="مثال: مشتريات الأسبوع">
+      </label>
+
+      <div class="row-actions">
+        <button class="primary" type="submit">＋ إضافة الحركة</button>
+      </div>
+      <div id="txAlert" class="alertbox" hidden></div>
+    </form>
+
+    <div class="card">
+      <div class="section-title">
+        <h2>حركات الشهر</h2>
+        <span class="pill" id="txCount">0 حركة</span>
+      </div>
+      <div id="txTable"></div>
+    </div>
+  </section>
+
+  <!-- ============ REPORT ============ -->
+  <section class="tabpane" id="tab-report">
+    <div class="card">
+      <div class="section-title">
+        <h2>التقرير الشهري</h2>
+        <span class="pill" id="reportMonth">—</span>
+      </div>
+      <p class="sub">انسخ التقرير أو نزّل الحركات كملف CSV لتحليلها في Excel أو عند إرسالها لأي مساعد ذكي.</p>
+      <div class="row-actions no-print">
+        <button class="primary" id="btnCopyReport">📋 نسخ التقرير</button>
+        <button class="ghost" id="btnCopyCsv">نسخ الحركات (CSV)</button>
+        <button class="ghost" id="btnDownloadCsv">⬇ تنزيل CSV</button>
+        <button class="ghost" id="btnPrint">🖨 طباعة / PDF</button>
+      </div>
+      <div class="stats mt12" id="reportStats" style="margin-bottom:0"></div>
+    </div>
+
+    <div class="card">
+      <h2>ملخص التقرير (نص جاهز للنسخ)</h2>
+      <p class="sub">هذا النص هو ما سيُنسخ عند الضغط على «نسخ التقرير».</p>
+      <pre class="report" id="reportText">—</pre>
+    </div>
+
+    <div class="card">
+      <h2>حسب التصنيف</h2>
+      <div id="reportCats"></div>
+    </div>
+
+    <div class="card">
+      <h2>حسب أفراد العائلة</h2>
+      <div id="reportMembers"></div>
+    </div>
+
+    <div class="card">
+      <h2>كل حركات الشهر</h2>
+      <div id="reportTable"></div>
+    </div>
+  </section>
+
+  <!-- ============ MEMBERS ============ -->
+  <section class="tabpane" id="tab-members">
+    <div class="card">
+      <h2>إضافة فرد من العائلة</h2>
+      <p class="sub">أضف الأفراد لتربط كل حركة بصاحبها وتعرف من يصرف أكثر.</p>
+      <form class="inline-form" id="memberForm" autocomplete="off">
+        <label class="fld grow">اسم الفرد
+          <input id="mName" type="text" maxlength="40" placeholder="مثال: أحمد، أم محمد..." required>
+        </label>
+        <button class="primary" type="submit">＋ إضافة فرد</button>
+      </form>
+      <div class="chiplist" id="memberChips"></div>
+    </div>
+
+    <div class="card">
+      <h2>حركة كل فرد هذا الشهر</h2>
+      <div id="membersTable"></div>
+    </div>
+  </section>
+
+  <!-- ============ CATEGORIES ============ -->
+  <section class="tabpane" id="tab-cats">
+    <div class="card">
+      <h2>إضافة تصنيف</h2>
+      <p class="sub">التصنيفات تجعل الرسم البياني والتقرير أدق وأسهل للقراءة.</p>
+      <form class="inline-form" id="catForm" autocomplete="off">
+        <label class="fld grow">اسم التصنيف
+          <input id="cName" type="text" maxlength="40" placeholder="مثال: فواتير الكهرباء" required>
+        </label>
+        <label class="fld">النوع
+          <select id="cType">
+            <option value="expense">مصروف</option>
+            <option value="income">دخل</option>
+          </select>
+        </label>
+        <button class="primary" type="submit">＋ إضافة تصنيف</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>تصنيفات المصاريف</h2>
+      <div class="chiplist" id="expCats"></div>
+    </div>
+
+    <div class="card">
+      <h2>تصنيفات المداخيل</h2>
+      <div class="chiplist" id="incCats"></div>
+    </div>
+
+    <div class="card">
+      <h2>الميزانيات الشهرية</h2>
+      <p class="sub">حدد مبلغًا شهريًا لكل تصنيف مصروف. سيظهر تنبيه أحمر بمجرد تجاوزه، وتنبيه أصفر عند الاقتراب من 80%. اتركه فارغًا لما لا تريد تقييده.</p>
+      <div id="budgetsList"></div>
+    </div>
+
+    <div class="card">
+      <h2>النسخ الاحتياطي</h2>
+      <p class="sub">احفظ نسخة من كل بياناتك في ملف، أو استعدها على جهاز آخر.</p>
+      <div class="row-actions">
+        <button class="ghost" id="btnBackup">⬇ تنزيل نسخة احتياطية (JSON)</button>
+        <button class="ghost" id="btnRestore">⬆ استعادة من ملف</button>
+        <input type="file" id="restoreFile" accept="application/json,.json" hidden>
+      </div>
+      <div class="note">البيانات محفوظة داخل هذا المتصفح فقط. مسح بيانات المتصفح يمسح الحركات، لذا احتفظ بنسخة احتياطية من وقت لآخر.</div>
+    </div>
+  </section>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+  if ("serviceWorker" in navigator) {
+    window.addEventListener("load", function(){
+      navigator.serviceWorker.register("./sw.js").catch(function(){});
+    });
+  }
+</script>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ================= أدوات مساعدة ================= */
+  const $  = (s, r) => (r || document).querySelector(s);
+  const $$ = (s, r) => Array.prototype.slice.call((r || document).querySelectorAll(s));
+  const uid = () => Math.random().toString(36).slice(2, 9) + Date.now().toString(36).slice(-3);
+  const esc = (s) => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const num = (n) => Number(n) || 0;
+  const round2 = (n) => Math.round((Number(n) || 0) * 100) / 100;
+  const fmt = (n) => round2(n).toLocaleString("en-US", { maximumFractionDigits: 2 });
+
+  function todayISO(){
+    const d = new Date();
+    return new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+  }
+  const monthOf = (dateStr) => String(dateStr || "").slice(0, 7);
+  function monthLabel(m){
+    if(!m) return "—";
+    try{
+      return new Intl.DateTimeFormat("ar", { month: "long", year: "numeric" }).format(new Date(m + "-01T00:00:00"));
+    }catch(e){ return m; }
+  }
+
+  /* ================= الحالة والتخزين ================= */
+  const LS_KEY = "family-budget-v1";
+
+  const DEFAULT_CATEGORIES = [
+    { name: "طعام وشراب",        type: "expense", color: "#f97316" },
+    { name: "مواصلات",           type: "expense", color: "#0ea5e9" },
+    { name: "فواتير ومرافق",     type: "expense", color: "#f59e0b" },
+    { name: "سكن وإيجار",        type: "expense", color: "#8b5cf6" },
+    { name: "صحة",               type: "expense", color: "#ef4444" },
+    { name: "تعليم",             type: "expense", color: "#6366f1" },
+    { name: "ملابس",             type: "expense", color: "#ec4899" },
+    { name: "ترفيه",             type: "expense", color: "#14b8a6" },
+    { name: "مصاريف أخرى",       type: "expense", color: "#64748b" },
+    { name: "راتب",              type: "income",  color: "#15803d" },
+    { name: "عمل إضافي",         type: "income",  color: "#16a34a" },
+    { name: "مكافآت",            type: "income",  color: "#0f766e" },
+    { name: "هدايا",             type: "income",  color: "#65a30d" },
+    { name: "مداخيل أخرى",       type: "income",  color: "#475569" }
+  ];
+
+  const PALETTE = ["#0f766e","#f97316","#6366f1","#ef4444","#14b8a6","#8b5cf6",
+                   "#ec4899","#84cc16","#06b6d4","#f59e0b","#3b82f6","#a855f7",
+                   "#10b981","#eab308","#64748b"];
+
+  let state = {
+    version: 1,
+    currency: "ر.س",
+    members: [],
+    categories: [],
+    transactions: [],
+    budgets: {}
+  };
+
+  let currentMonth = todayISO().slice(0, 7);
+  let formType = "expense";
+
+  function save(){
+    try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }
+    catch(e){ toast("تعذّر الحفظ في المتصفح"); }
+  }
+
+  function load(){
+    let raw = null;
+    try{ raw = localStorage.getItem(LS_KEY); }catch(e){ raw = null; }
+
+    if(raw){
+      try{
+        const parsed = JSON.parse(raw);
+        state.members      = Array.isArray(parsed.members) ? parsed.members : [];
+        state.categories   = Array.isArray(parsed.categories) ? parsed.categories : [];
+        state.transactions = Array.isArray(parsed.transactions) ? parsed.transactions : [];
+        state.currency     = parsed.currency || "ر.س";
+        state.budgets      = (parsed.budgets && typeof parsed.budgets === "object") ? parsed.budgets : {};
+      }catch(e){
+        state.categories = seedCategories();
+      }
+    }else{
+      state.categories = seedCategories();
+    }
+
+    if(!state.categories.length) state.categories = seedCategories();
+
+    // تنظيف أي حركة تشير لتصنيف محذوف
+    const ids = new Set(state.categories.map(c => c.id));
+    state.transactions = state.transactions.filter(t => ids.has(t.categoryId));
+    save();
+  }
+
+  function seedCategories(){
+    return DEFAULT_CATEGORIES.map(c => ({ id: uid(), name: c.name, type: c.type, color: c.color }));
+  }
+
+  /* ================= توست ================= */
+  let toastTimer = null;
+  function toast(msg){
+    const el = $("#toast");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => el.classList.remove("show"), 2200);
+  }
+
+  /* ================= استعلامات ================= */
+  const catById = (id) => state.categories.find(c => c.id === id) || null;
+  const memById = (id) => state.members.find(m => m.id === id) || null;
+  const catName = (id) => { const c = catById(id); return c ? c.name : "غير مصنف"; };
+  const catColor = (id) => { const c = catById(id); return c ? c.color : "#9ca3af"; };
+  const memName = (id) => { const m = memById(id); return m ? m.name : "كل العائلة"; };
+
+  function txsOfMonth(){
+    return state.transactions.filter(t => monthOf(t.date) === currentMonth);
+  }
+  function sum(list){ return round2(list.reduce((a, t) => a + num(t.amount), 0)); }
+
+  function byCategory(list, type){
+    const map = new Map();
+    list.filter(t => t.type === type).forEach(t => {
+      const key = t.categoryId || "none";
+      if(!map.has(key)) map.set(key, { id: key, label: catName(t.categoryId), color: catColor(t.categoryId), value: 0, count: 0 });
+      const row = map.get(key);
+      row.value = round2(row.value + num(t.amount));
+      row.count++;
+    });
+    return Array.from(map.values()).sort((a, b) => b.value - a.value);
+  }
+
+  function byMember(list){
+    const map = new Map();
+    list.forEach(t => {
+      const key = t.memberId || "none";
+      if(!map.has(key)) map.set(key, { id: key, label: memName(t.memberId), expense: 0, income: 0, count: 0 });
+      const row = map.get(key);
+      if(t.type === "income") row.income = round2(row.income + num(t.amount));
+      else row.expense = round2(row.expense + num(t.amount));
+      row.count++;
+    });
+    return Array.from(map.values()).sort((a, b) => (b.expense + b.income) - (a.expense + a.income));
+  }
+
+  const cur = () => state.currency;
+
+  /* ================= الرسم البياني الدائري ================= */
+  function donut(items, total){
+    const size = 176, stroke = 26, r = (size - stroke) / 2 - 2;
+    const cx = size / 2, cy = size / 2;
+    const C = 2 * Math.PI * r;
+    let offset = 0;
+    let segs = "";
+
+    if(!items.length || total <= 0){
+      segs = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="#eee9dd" stroke-width="' + stroke + '"></circle>';
+    }else{
+      items.forEach(it => {
+        const frac = it.value / total;
+        const len = Math.max(frac * C - 2, 0.6); // فجوة صغيرة بين القطاعات
+        segs += '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '" fill="none" stroke="' + it.color + '"' +
+                ' stroke-width="' + stroke + '" stroke-dasharray="' + len.toFixed(2) + ' ' + C.toFixed(2) + '"' +
+                ' stroke-dashoffset="' + (-offset).toFixed(2) + '"' +
+                ' transform="rotate(-90 ' + cx + ' ' + cy + ')" stroke-linecap="butt"></circle>';
+        offset += frac * C;
+      });
+    }
+
+    return '<svg viewBox="0 0 ' + size + ' ' + size + '" width="176" height="176" role="img" aria-label="رسم بياني دائري">' +
+             segs +
+             '<text class="donut-center-total" x="' + cx + '" y="' + (cy - 6) + '" text-anchor="middle">الإجمالي</text>' +
+             '<text class="donut-center-val" x="' + cx + '" y="' + (cy + 14) + '" text-anchor="middle">' + esc(fmt(total)) + '</text>' +
+           '</svg>';
+  }
+
+  function legendHTML(items, total){
+    if(!items.length) return '<p class="empty">لا توجد بيانات لهذا الشهر بعد.</p>';
+    return '<ul class="legend">' + items.map(it => {
+      const pct = total > 0 ? Math.round((it.value / total) * 100) : 0;
+      return '<li>' +
+        '<span class="dot" style="background:' + esc(it.color) + '"></span>' +
+        '<span class="lg-name">' + esc(it.label) + '</span>' +
+        '<span class="lg-val">' + esc(fmt(it.value)) + '</span>' +
+        '<span class="lg-pct">' + pct + '%</span>' +
+      '</li>';
+    }).join("") + '</ul>';
+  }
+
+  /* ================= الرسم البياني: تغليف ================= */
+  function chartHTML(items, total, emptyMsg){
+    if(!items.length){
+      return '<div style="width:100%"><p class="empty">' + esc(emptyMsg) + '</p></div>';
+    }
+    return '<div class="donutbox">' + donut(items, total) + '</div>' + legendHTML(items, total);
+  }
+
+  /* ================= الرئيسية ================= */
+  function renderHome(){
+    const list = txsOfMonth();
+    const exps = list.filter(t => t.type === "expense");
+    const incs = list.filter(t => t.type === "income");
+    const totalExp = sum(exps);
+    const totalInc = sum(incs);
+    const net = round2(totalInc - totalExp);
+
+    $("#homeStats").innerHTML =
+      statCard("دخل الشهر", totalInc, "inc") +
+      statCard("مصاريف الشهر", totalExp, "exp") +
+      statCard(net >= 0 ? "المتبقي (الصافي)" : "العجز", Math.abs(net), "net") +
+      '<div class="stat"><span class="k">عدد الحركات</span><div class="v">' + list.length + '</div></div>';
+
+    const expItems = byCategory(list, "expense");
+    const incItems = byCategory(list, "income");
+
+    $("#expChartSub").textContent = exps.length + " حركة مصروف • " + monthLabel(currentMonth);
+    $("#incChartSub").textContent = incs.length + " حركة دخل • " + monthLabel(currentMonth);
+    $("#expChart").innerHTML = chartHTML(expItems, totalExp, "لم تُسجّل مصاريف في هذا الشهر.");
+    $("#incChart").innerHTML = chartHTML(incItems, totalInc, "لم تُسجّل مداخيل في هذا الشهر.");
+
+    // توزيع الأفراد
+    const memRows = byMember(list);
+    if(!state.members.length){
+      $("#homeMembers").innerHTML = '<p class="empty">لم تُضف أفرادًا بعد. أضفهم من تبويب «أفراد العائلة».</p>';
+    }else if(!list.length){
+      $("#homeMembers").innerHTML = '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+    }else{
+      const maxV = Math.max.apply(null, memRows.map(r => r.expense + r.income).concat([1]));
+      $("#homeMembers").innerHTML = memRows.map(r => {
+        const total = round2(r.expense + r.income);
+        const w = Math.max(2, Math.round((total / maxV) * 100));
+        return '<div style="margin-bottom:12px">' +
+          '<div style="display:flex;justify-content:space-between;font-size:.85rem;margin-bottom:4px">' +
+            '<span>' + esc(r.label) + ' <span class="pill" style="margin-inline-start:6px">' + r.count + ' حركة</span></span>' +
+            '<span style="font-variant-numeric:tabular-nums;color:#6b7280">' + esc(fmt(total)) + ' ' + esc(cur()) + '</span>' +
+          '</div>' +
+          '<div style="height:8px;background:#f1eee6;border-radius:999px;overflow:hidden;display:flex">' +
+            '<div style="width:' + w + '%;background:var(--accent);height:100%"></div>' +
+          '</div>' +
+        '</div>';
+      }).join("");
+    }
+
+    // أحدث الحركات
+    const recent = list.slice().sort(sortTx).slice(0, 5);
+    $("#homeRecent").innerHTML = recent.length ? txTableHTML(recent, false) : '<p class="empty">لم تُسجّل حركات في هذا الشهر. ابدأ من تبويب «الحركات».</p>';
+  }
+
+  function statCard(label, value, cls){
+    return '<div class="stat ' + cls + '"><span class="k">' + esc(label) + '</span>' +
+           '<div class="v">' + esc(fmt(value)) + '<small>' + esc(cur()) + '</small></div></div>';
+  }
+
+  const sortTx = (a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : (a.createdAt || 0) < (b.createdAt || 0) ? 1 : -1);
+
+  /* ================= جدول الحركات ================= */
+  function txTableHTML(list, withDelete){
+    if(!list.length) return '<p class="empty">لا توجد حركات.</p>';
+    const rows = list.slice().sort(sortTx).map(t => {
+      const isInc = t.type === "income";
+      return '<tr>' +
+        '<td>' + esc(t.date) + '</td>' +
+        '<td>' + (isInc ? '<span class="badge inc">دخل</span>' : '<span class="badge exp">مصروف</span>') + '</td>' +
+        '<td><span class="dot" style="display:inline-block;width:9px;height:9px;border-radius:3px;background:' + esc(catColor(t.categoryId)) + ';margin-inline-end:6px"></span>' + esc(catName(t.categoryId)) + '</td>' +
+        '<td>' + esc(memName(t.memberId)) + '</td>' +
+        '<td class="num ' + (isInc ? "amount-inc" : "amount-exp") + '">' + (isInc ? "+" : "−") + " " + esc(fmt(t.amount)) + '</td>' +
+        '<td style="color:#6b7280">' + esc(t.note || "—") + '</td>' +
+        (withDelete ? '<td><button class="iconbtn" data-del="' + esc(t.id) + '" title="حذف">حذف</button></td>' : '') +
+      '</tr>';
+    }).join("");
+
+    return '<div class="tablewrap"><table><thead><tr>' +
+      '<th>التاريخ</th><th>النوع</th><th>التصنيف</th><th>الفرد</th><th>المبلغ (' + esc(cur()) + ')</th><th>ملاحظة</th>' +
+      (withDelete ? '<th></th>' : '') +
+      '</tr></thead><tbody>' + rows + '</tbody></table></div>';
+  }
+
+  function renderTx(){
+    const list = txsOfMonth();
+    $("#txMonthLabel").textContent = monthLabel(currentMonth);
+    $("#txCount").textContent = list.length + " حركة";
+    $("#txTable").innerHTML = txTableHTML(list, true);
+  }
+
+  /* ================= التقرير ================= */
+  function reportData(){
+    const list = txsOfMonth();
+    const exps = list.filter(t => t.type === "expense");
+    const incs = list.filter(t => t.type === "income");
+    const totalExp = sum(exps);
+    const totalInc = sum(incs);
+    return {
+      list: list,
+      expItems: byCategory(list, "expense"),
+      incItems: byCategory(list, "income"),
+      memRows: byMember(list),
+      totalExp: totalExp,
+      totalInc: totalInc,
+      net: round2(totalInc - totalExp)
+    };
+  }
+
+  function pct(part, whole){ return whole > 0 ? Math.round((part / whole) * 100) : 0; }
+
+  function reportText(data){
+    const c = cur();
+    const L = [];
+    L.push("تقرير مصاريف ومداخيل العائلة");
+    L.push("الشهر: " + monthLabel(currentMonth) + " (" + currentMonth + ")");
+    L.push("العملة: " + c);
+    L.push("");
+    L.push("الإجماليات:");
+    L.push("- الدخل الكلي: " + fmt(data.totalInc) + " " + c);
+    L.push("- المصروف الكلي: " + fmt(data.totalExp) + " " + c);
+    L.push("- الصافي: " + (data.net >= 0 ? "" : "−") + fmt(Math.abs(data.net)) + " " + c);
+    L.push("- عدد الحركات: " + data.list.length);
+    L.push("");
+
+    L.push("المصاريف حسب التصنيف:");
+    if(!data.expItems.length) L.push("- لا توجد مصاريف");
+    data.expItems.forEach(it => {
+      L.push("- " + it.label + ": " + fmt(it.value) + " " + c + " (" + pct(it.value, data.totalExp) + "%) — " + it.count + " حركة");
+    });
+    L.push("");
+
+    L.push("المداخيل حسب التصنيف:");
+    if(!data.incItems.length) L.push("- لا توجد مداخيل");
+    data.incItems.forEach(it => {
+      L.push("- " + it.label + ": " + fmt(it.value) + " " + c + " (" + pct(it.value, data.totalInc) + "%) — " + it.count + " حركة");
+    });
+    L.push("");
+
+    L.push("حسب أفراد العائلة:");
+    if(!data.memRows.length) L.push("- لا توجد بيانات");
+    data.memRows.forEach(r => {
+      L.push("- " + r.label + ": دخل " + fmt(r.income) + " | مصروف " + fmt(r.expense) +
+             " | صافي " + (r.income - r.expense >= 0 ? "" : "−") + fmt(Math.abs(round2(r.income - r.expense))) +
+             " | " + r.count + " حركة");
+    });
+    L.push("");
+
+    L.push("تفصيل الحركات:");
+    const sorted = data.list.slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0));
+    if(!sorted.length) L.push("- لا توجد حركات");
+    sorted.forEach(t => {
+      L.push("- " + t.date + " | " + (t.type === "income" ? "دخل" : "مصروف") + " | " + catName(t.categoryId) +
+             " | " + memName(t.memberId) + " | " + fmt(t.amount) + " " + c + (t.note ? " | " + t.note : ""));
+    });
+
+    return L.join("\n");
+  }
+
+  function csvOfMonth(){
+    const rows = [["التاريخ","النوع","التصنيف","الفرد","المبلغ","العملة","ملاحظة"]];
+    txsOfMonth().slice().sort((a, b) => (a.date < b.date ? -1 : a.date > b.date ? 1 : 0)).forEach(t => {
+      rows.push([
+        t.date,
+        t.type === "income" ? "دخل" : "مصروف",
+        catName(t.categoryId),
+        memName(t.memberId),
+        String(round2(t.amount)),
+        cur(),
+        t.note || ""
+      ]);
+    });
+    return rows.map(r => r.map(cell => {
+      const s = String(cell == null ? "" : cell);
+      return /[",\n\r;]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+    }).join(",")).join("\r\n");
+  }
+
+  function renderReport(){
+    const d = reportData();
+    $("#reportMonth").textContent = monthLabel(currentMonth);
+    $("#reportStats").innerHTML =
+      statCard("الدخل الكلي", d.totalInc, "inc") +
+      statCard("المصروف الكلي", d.totalExp, "exp") +
+      statCard(d.net >= 0 ? "الصافي" : "العجز", Math.abs(d.net), "net") +
+      '<div class="stat"><span class="k">حركات الشهر</span><div class="v">' + d.list.length + '</div></div>';
+
+    $("#reportText").textContent = reportText(d);
+
+    // جدول التصنيفات
+    const catRows = []
+      .concat(d.expItems.map(i => ({ label: i.label, color: i.color, count: i.count, value: i.value, type: "مصروف", total: d.totalExp })))
+      .concat(d.incItems.map(i => ({ label: i.label, color: i.color, count: i.count, value: i.value, type: "دخل", total: d.totalInc })));
+
+    $("#reportCats").innerHTML = catRows.length
+      ? '<div class="tablewrap"><table><thead><tr><th>التصنيف</th><th>النوع</th><th>عدد الحركات</th><th>المبلغ (' + esc(cur()) + ')</th><th>النسبة</th></tr></thead><tbody>' +
+        catRows.map(r =>
+          '<tr>' +
+            '<td><span style="display:inline-block;width:9px;height:9px;border-radius:3px;background:' + esc(r.color) + ';margin-inline-end:6px"></span>' + esc(r.label) + '</td>' +
+            '<td>' + (r.type === "دخل" ? '<span class="badge inc">دخل</span>' : '<span class="badge exp">مصروف</span>') + '</td>' +
+            '<td class="num">' + r.count + '</td>' +
+            '<td class="num">' + esc(fmt(r.value)) + '</td>' +
+            '<td class="num">' + pct(r.value, r.total) + '%</td>' +
+          '</tr>'
+        ).join("") + '</tbody></table></div>'
+      : '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+
+    // جدول الأفراد
+    $("#reportMembers").innerHTML = d.memRows.length
+      ? '<div class="tablewrap"><table><thead><tr><th>الفرد</th><th>الدخل (' + esc(cur()) + ')</th><th>المصروف (' + esc(cur()) + ')</th><th>الصافي</th><th>عدد الحركات</th></tr></thead><tbody>' +
+        d.memRows.map(r => {
+          const netV = round2(r.income - r.expense);
+          return '<tr>' +
+            '<td>' + esc(r.label) + '</td>' +
+            '<td class="num amount-inc">' + esc(fmt(r.income)) + '</td>' +
+            '<td class="num amount-exp">' + esc(fmt(r.expense)) + '</td>' +
+            '<td class="num" style="color:' + (netV < 0 ? "#b91c1c" : "inherit") + '">' + (netV < 0 ? "− " : "") + esc(fmt(Math.abs(netV))) + '</td>' +
+            '<td class="num">' + r.count + '</td>' +
+          '</tr>';
+        }).join("") + '</tbody></table></div>'
+      : '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+
+    $("#reportTable").innerHTML = txTableHTML(d.list, false);
+  }
+
+  /* ================= الأفراد ================= */
+  function renderMembers(){
+    $("#memberChips").innerHTML = state.members.length
+      ? state.members.map(m =>
+          '<span class="chip">' + esc(m.name) +
+          '<button data-del-member="' + esc(m.id) + '" title="حذف">×</button></span>'
+        ).join("")
+      : '<p class="empty" style="width:100%">لم تُضف أفرادًا بعد.</p>';
+
+    const list = txsOfMonth();
+    const rows = byMember(list);
+    $("#membersTable").innerHTML = rows.length
+      ? '<div class="tablewrap"><table><thead><tr><th>الفرد</th><th>الدخل (' + esc(cur()) + ')</th><th>المصروف (' + esc(cur()) + ')</th><th>الصافي</th><th>عدد الحركات</th></tr></thead><tbody>' +
+        rows.map(r => {
+          const netV = round2(r.income - r.expense);
+          return '<tr>' +
+            '<td>' + esc(r.label) + '</td>' +
+            '<td class="num amount-inc">' + esc(fmt(r.income)) + '</td>' +
+            '<td class="num amount-exp">' + esc(fmt(r.expense)) + '</td>' +
+            '<td class="num">' + (netV < 0 ? "− " : "") + esc(fmt(Math.abs(netV))) + '</td>' +
+            '<td class="num">' + r.count + '</td>' +
+          '</tr>';
+        }).join("") + '</tbody></table></div>'
+      : '<p class="empty">لا توجد حركات في هذا الشهر.</p>';
+  }
+
+  /* ================= الميزانيات ================= */
+  function budgetOf(catId){ return round2(state.budgets[catId] || 0); }
+
+  function spentOn(catId){
+    return sum(state.transactions.filter(t =>
+      t.type === "expense" && t.categoryId === catId && monthOf(t.date) === currentMonth
+    ));
+  }
+
+  function budgetStatus(){
+    return state.categories
+      .filter(c => c.type === "expense" && budgetOf(c.id) > 0)
+      .map(c => {
+        const budget = budgetOf(c.id);
+        const spent = spentOn(c.id);
+        const used = budget > 0 ? (spent / budget) * 100 : 0;
+        return {
+          cat: c, budget: budget, spent: spent, used: used,
+          level: spent > budget ? "over" : (used >= 80 ? "warn" : "ok")
+        };
+      })
+      .sort((a, b) => b.used - a.used);
+  }
+
+  function budgetBarHTML(r, editable){
+    const w = Math.min(100, Math.max(2, Math.round(r.used)));
+    const foot = r.level === "over"
+      ? "تجاوزت الميزانية بـ " + fmt(r.spent - r.budget) + " " + cur()
+      : "المتبقي " + fmt(r.budget - r.spent) + " " + cur();
+
+    return '<div class="budget">' +
+      '<div class="budget-top">' +
+        '<span class="budget-name"><span class="dot" style="background:' + esc(r.cat.color) + '"></span>' + esc(r.cat.name) + '</span>' +
+        '<span class="budget-vals"><strong>' + esc(fmt(r.spent)) + '</strong> / ' + esc(fmt(r.budget)) + ' ' + esc(cur()) +
+          ' <span style="color:' + (r.level === "over" ? "#dc2626" : r.level === "warn" ? "#d97706" : "#0f766e") + '">(' + Math.round(r.used) + '%)</span></span>' +
+      '</div>' +
+      '<div class="bar"><div class="fill ' + r.level + '" style="width:' + w + '%"></div></div>' +
+      '<div class="budget-foot">' +
+        '<span>' + esc(foot) + '</span>' +
+        (editable ? '<input class="budget-input" type="number" min="0" step="10" data-budget="' + esc(r.cat.id) + '" value="' + r.budget + '" placeholder="الميزانية">' : '') +
+      '</div>' +
+    '</div>';
+  }
+
+  function renderHomeAlerts(){
+    const rows = budgetStatus();
+    if(!rows.length){
+      $("#homeAlerts").innerHTML = '<p class="empty">لم تحدد ميزانيات بعد. اضبط ميزانية شهرية لكل تصنيف من تبويب «التصنيفات» لتظهر هنا حالة الصرف والتنبيهات.</p>';
+      return;
+    }
+    const over = rows.filter(r => r.level === "over");
+    const warn = rows.filter(r => r.level === "warn");
+    let head = "";
+    if(over.length){
+      head += '<div class="alertbox danger">⚠️ تجاوزت الميزانية في ' + over.length + ' تصنيف: ' +
+        over.map(r => esc(r.cat.name)).join("، ") + '</div>';
+    }else if(warn.length){
+      head += '<div class="alertbox warn">اقتربت من حد الميزانية في: ' +
+        warn.map(r => esc(r.cat.name)).join("، ") + '</div>';
+    }
+    $("#homeAlerts").innerHTML = head + rows.map(r => budgetBarHTML(r, false)).join("");
+  }
+
+  function renderBudgets(){
+    const cats = state.categories.filter(c => c.type === "expense");
+    if(!cats.length){
+      $("#budgetsList").innerHTML = '<p class="empty">أضف تصنيفات مصاريف أولًا.</p>';
+      return;
+    }
+    $("#budgetsList").innerHTML = cats.map(c => {
+      const budget = budgetOf(c.id);
+      if(budget > 0){
+        const spent = spentOn(c.id);
+        const used = (spent / budget) * 100;
+        return budgetBarHTML({
+          cat: c, budget: budget, spent: spent, used: used,
+          level: spent > budget ? "over" : (used >= 80 ? "warn" : "ok")
+        }, true);
+      }
+      return '<div class="budget">' +
+        '<div class="budget-top">' +
+          '<span class="budget-name"><span class="dot" style="background:' + esc(c.color) + '"></span>' + esc(c.name) + '</span>' +
+          '<span class="budget-vals">' + esc(fmt(spentOn(c.id))) + ' تم صرفه ' + esc(cur()) + '</span>' +
+        '</div>' +
+        '<div class="budget-foot">' +
+          '<span>لا توجد ميزانية محددة</span>' +
+          '<input class="budget-input" type="number" min="0" step="10" data-budget="' + esc(c.id) + '" placeholder="الميزانية">' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+
+  function txAlert(level, msg){
+    const el = $("#txAlert");
+    if(!level || !msg){ el.hidden = true; el.innerHTML = ""; return; }
+    el.className = "alertbox " + level;
+    el.innerHTML = esc(msg);
+    el.hidden = false;
+  }
+
+  /* ================= التصنيفات ================= */
+  function renderCats(){
+    const chip = (c) => '<span class="chip"><span class="swatch" style="background:' + esc(c.color) + '"></span>' + esc(c.name) +
+      '<button data-del-cat="' + esc(c.id) + '" title="حذف">×</button></span>';
+
+    const exps = state.categories.filter(c => c.type === "expense");
+    const incs = state.categories.filter(c => c.type === "income");
+    $("#expCats").innerHTML = exps.length ? exps.map(chip).join("") : '<p class="empty" style="width:100%">لا توجد تصنيفات.</p>';
+    $("#incCats").innerHTML = incs.length ? incs.map(chip).join("") : '<p class="empty" style="width:100%">لا توجد تصنيفات.</p>';
+  }
+
+  /* ================= النماذج ================= */
+  function setOptions(sel, htmlOptions){
+    const prev = sel.value;
+    sel.innerHTML = htmlOptions;
+    if(Array.prototype.some.call(sel.options, o => o.value === prev)) sel.value = prev;
+  }
+
+  function populateForm(){
+    const cats = state.categories.filter(c => c.type === formType);
+    setOptions($("#fCat"), cats.length
+      ? cats.map(c => '<option value="' + esc(c.id) + '">' + esc(c.name) + '</option>').join("")
+      : '<option value="">— أضف تصنيفًا أولًا —</option>');
+
+    setOptions($("#fMember"), '<option value="">— كل العائلة —</option>' +
+      state.members.map(m => '<option value="' + esc(m.id) + '">' + esc(m.name) + '</option>').join(""));
+
+    if(!$("#fDate").value) $("#fDate").value = todayISO();
+  }
+
+  function handleTxSubmit(e){
+    e.preventDefault();
+    const amount = round2($("#fAmount").value);
+    const date = $("#fDate").value || todayISO();
+    const categoryId = $("#fCat").value;
+    const memberId = $("#fMember").value || "";
+    const note = $("#fNote").value.trim();
+
+    if(!(amount > 0)){ toast("أدخل مبلغًا أكبر من صفر"); return; }
+    if(!categoryId){ toast("اختر تصنيفًا أو أضف تصنيفًا جديدًا"); return; }
+
+    state.transactions.push({
+      id: uid(),
+      type: formType,
+      amount: amount,
+      date: date,
+      categoryId: categoryId,
+      memberId: memberId,
+      note: note,
+      createdAt: Date.now()
+    });
+    save();
+
+    // تنبيه الميزانية
+    if(formType === "expense"){
+      const budget = budgetOf(categoryId);
+      if(budget > 0){
+        const spent = spentOn(categoryId);
+        const name = catName(categoryId);
+        if(spent > budget){
+          txAlert("danger", "⚠️ تجاوزت ميزانية «" + name + "»: صرفت " + fmt(spent) + " من أصل " + fmt(budget) + " " + cur() +
+                 " — الزيادة " + fmt(spent - budget) + " " + cur() + ".");
+          toast("تنبيه: تجاوزت ميزانية " + name);
+        }else if((spent / budget) * 100 >= 80){
+          txAlert("warn", "اقتربت من ميزانية «" + name + "»: صرفت " + fmt(spent) + " من " + fmt(budget) + " " + cur() + ".");
+        }else{
+          txAlert(null);
+        }
+      }else{
+        txAlert(null);
+      }
+    }else{
+      txAlert(null);
+    }
+
+    $("#fAmount").value = "";
+    $("#fNote").value = "";
+    $("#fAmount").focus();
+
+    toast("تمت إضافة الحركة ✓");
+    renderAll();
+  }
+
+  function handleMemberSubmit(e){
+    e.preventDefault();
+    const name = $("#mName").value.trim();
+    if(!name) return;
+    if(state.members.some(m => m.name === name)){ toast("هذا الاسم موجود بالفعل"); return; }
+    state.members.push({ id: uid(), name: name });
+    save();
+    $("#mName").value = "";
+    toast("تمت إضافة الفرد ✓");
+    renderAll();
+  }
+
+  function handleCatSubmit(e){
+    e.preventDefault();
+    const name = $("#cName").value.trim();
+    const type = $("#cType").value;
+    if(!name) return;
+    if(state.categories.some(c => c.name === name && c.type === type)){ toast("هذا التصنيف موجود بالفعل"); return; }
+    const color = PALETTE[state.categories.length % PALETTE.length];
+    state.categories.push({ id: uid(), name: name, type: type, color: color });
+    save();
+    $("#cName").value = "";
+    toast("تمت إضافة التصنيف ✓");
+    renderAll();
+  }
+
+  /* ================= حذف ================= */
+  function deleteTx(id){
+    const t = state.transactions.find(x => x.id === id);
+    if(!t) return;
+    if(!confirm("حذف هذه الحركة؟\n" + t.date + " — " + catName(t.categoryId) + " — " + fmt(t.amount) + " " + cur())) return;
+    state.transactions = state.transactions.filter(x => x.id !== id);
+    save(); toast("تم حذف الحركة");
+    renderAll();
+  }
+
+  function deleteMember(id){
+    const used = state.transactions.filter(t => t.memberId === id).length;
+    if(used > 0){ toast("لا يمكن الحذف: هذا الفرد مرتبط بـ " + used + " حركة"); return; }
+    if(!confirm("حذف هذا الفرد؟")) return;
+    state.members = state.members.filter(m => m.id !== id);
+    save(); toast("تم حذف الفرد");
+    renderAll();
+  }
+
+  function deleteCat(id){
+    const used = state.transactions.filter(t => t.categoryId === id).length;
+    if(used > 0){ toast("لا يمكن الحذف: هذا التصنيف مستخدم في " + used + " حركة"); return; }
+    if(!confirm("حذف هذا التصنيف؟")) return;
+    state.categories = state.categories.filter(c => c.id !== id);
+    delete state.budgets[id];
+    save(); toast("تم حذف التصنيف");
+    renderAll();
+  }
+
+  /* ================= نسخ وتنزيل ================= */
+  function copyText(text, okMsg){
+    const done = () => toast(okMsg || "تم النسخ ✓");
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(done).catch(() => fallbackCopy(text, done));
+    }else{
+      fallbackCopy(text, done);
+    }
+  }
+  function fallbackCopy(text, done){
+    const ta = document.createElement("textarea");
+    ta.value = text;
+    ta.setAttribute("readonly", "");
+    ta.style.position = "fixed";
+    ta.style.top = "-1000px";
+    document.body.appendChild(ta);
+    ta.select();
+    try{ document.execCommand("copy"); done(); }
+    catch(e){ toast("تعذّر النسخ، انسخ النص من الصندوق يدويًا"); }
+    document.body.removeChild(ta);
+  }
+
+  function download(filename, content, mime){
+    const blob = new Blob([content], { type: mime || "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  /* ================= النسخ الاحتياطي ================= */
+  function backup(){
+    const payload = JSON.stringify({ app: "family-budget", exportedAt: new Date().toISOString(), data: state }, null, 2);
+    download("نسخة-احتياطية-" + todayISO() + ".json", payload, "application/json");
+    toast("تم تنزيل النسخة الاحتياطية");
+  }
+
+  function restore(file){
+    const reader = new FileReader();
+    reader.onload = () => {
+      try{
+        const parsed = JSON.parse(String(reader.result));
+        const d = parsed && parsed.data ? parsed.data : parsed;
+        if(!d || !Array.isArray(d.categories) || !Array.isArray(d.transactions)){
+          toast("الملف غير صالح"); return;
+        }
+        if(!confirm("استعادة هذا الملف ستحل محل البيانات الحالية. متابعة؟")) return;
+        state.members = Array.isArray(d.members) ? d.members : [];
+        state.categories = Array.isArray(d.categories) && d.categories.length ? d.categories : seedCategories();
+        state.transactions = Array.isArray(d.transactions) ? d.transactions : [];
+        state.currency = d.currency || "ر.س";
+        state.budgets = (d.budgets && typeof d.budgets === "object") ? d.budgets : {};
+        save();
+        $("#currencyPick").value = state.currency;
+        toast("تمت الاستعادة ✓");
+        renderAll();
+      }catch(err){
+        toast("تعذّر قراءة الملف");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  /* ================= الرسم الكامل ================= */
+  function renderAll(){
+    populateForm();
+    renderHome();
+    renderTx();
+    renderReport();
+    renderMembers();
+    renderCats();
+    renderBudgets();
+    renderHomeAlerts();
+    $("#currencyPick").value = state.currency;
+  }
+
+  /* ================= الأحداث ================= */
+  function bind(){
+    $("#tabs").addEventListener("click", e => {
+      const btn = e.target.closest(".tabbtn");
+      if(!btn) return;
+      $$(".tabbtn").forEach(b => b.classList.toggle("active", b === btn));
+      $$(".tabpane").forEach(p => p.classList.toggle("active", p.id === "tab-" + btn.dataset.tab));
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+
+    document.addEventListener("click", e => {
+      const go = e.target.closest("[data-goto]");
+      if(go){
+        const b = $('.tabbtn[data-tab="' + go.dataset.goto + '"]');
+        if(b) b.click();
+      }
+    });
+
+    $("#monthPick").addEventListener("change", e => {
+      currentMonth = e.target.value || todayISO().slice(0, 7);
+      renderAll();
+    });
+
+    $("#currencyPick").addEventListener("change", e => {
+      state.currency = e.target.value;
+      save();
+      renderAll();
+    });
+
+    $("#typeSeg").addEventListener("click", e => {
+      const b = e.target.closest(".segbtn");
+      if(!b) return;
+      formType = b.dataset.type;
+      $$("#typeSeg .segbtn").forEach(x => x.classList.toggle("active", x === b));
+      populateForm();
+    });
+
+    $("#txForm").addEventListener("submit", handleTxSubmit);
+    $("#memberForm").addEventListener("submit", handleMemberSubmit);
+    $("#catForm").addEventListener("submit", handleCatSubmit);
+
+    // تعديل الميزانية
+    document.addEventListener("change", e => {
+      const inp = e.target.closest("[data-budget]");
+      if(!inp) return;
+      const id = inp.getAttribute("data-budget");
+      const v = round2(inp.value);
+      if(v > 0) state.budgets[id] = v;
+      else delete state.budgets[id];
+      save();
+      renderAll();
+      toast(v > 0 ? "تم حفظ الميزانية ✓" : "تم إلغاء ميزانية هذا التصنيف");
+    });
+
+    document.addEventListener("click", e => {
+      const dTx = e.target.closest("[data-del]");
+      if(dTx){ deleteTx(dTx.getAttribute("data-del")); return; }
+
+      const dMem = e.target.closest("[data-del-member]");
+      if(dMem){ deleteMember(dMem.getAttribute("data-del-member")); return; }
+
+      const dCat = e.target.closest("[data-del-cat]");
+      if(dCat){ deleteCat(dCat.getAttribute("data-del-cat")); return; }
+    });
+
+    $("#btnCopyReport").addEventListener("click", () => {
+      copyText(reportText(reportData()), "تم نسخ التقرير — الصقه حيث تحتاج ✓");
+    });
+    $("#btnCopyCsv").addEventListener("click", () => {
+      copyText(csvOfMonth(), "تم نسخ الحركات بصيغة CSV ✓");
+    });
+    $("#btnDownloadCsv").addEventListener("click", () => {
+      if(!txsOfMonth().length){ toast("لا توجد حركات في هذا الشهر"); return; }
+      // BOM لضمان ظهور العربية بشكل سليم في Excel
+      download("حركات-" + currentMonth + ".csv", "\ufeff" + csvOfMonth(), "text/csv;charset=utf-8");
+      toast("تم تنزيل الملف ✓");
+    });
+    $("#btnPrint").addEventListener("click", () => window.print());
+
+    $("#btnBackup").addEventListener("click", backup);
+    $("#btnRestore").addEventListener("click", () => $("#restoreFile").click());
+    $("#restoreFile").addEventListener("change", e => {
+      const f = e.target.files && e.target.files[0];
+      if(f) restore(f);
+      e.target.value = "";
+    });
+  }
+
+  /* ================= بدء ================= */
+  load();
+  $("#monthPick").value = currentMonth;
+  $("#fDate").value = todayISO();
+  bind();
+  renderAll();
+})();
+</script>
+</body>
+</html>
