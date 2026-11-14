@@ -525,7 +525,12 @@
       </div>
       <div class="note" id="scanStatus" data-i18n="scan.ready">لم تختر صورة بعد.</div>
       <div id="scanPreview"></div>
-      <p class="sub" style="margin-top:12px" data-i18n="scan.engineNote">المرة الأولى تحتاج اتصالًا بالإنترنت لتحميل محرّك القراءة، ثم يبقى في ذاكرة المتصفح.</p>
+      <details class="note" id="scanRawWrap" hidden style="margin-top:12px">
+        <summary data-i18n="scan.rawTitle" style="cursor:pointer">عرض النص الذي قرأه التطبيق</summary>
+        <pre id="scanRaw" style="white-space:pre-wrap;font-size:.78rem;margin:10px 0 0;direction:ltr;text-align:left"></pre>
+      </details>
+      <p class="sub" style="margin-top:12px" data-i18n="scan.tips">لقراءة أفضل: ضع الفاتورة على سطح مستوٍ، وأضئها جيدًا، وأبعد الظل، وتأكد أن كل السطور داخل الصورة.</p>
+      <p class="sub" style="margin-top:4px" data-i18n="scan.engineNote">المرة الأولى تحتاج اتصالًا بالإنترنت لتحميل محرّك القراءة، ثم يبقى في ذاكرة المتصفح.</p>
     </div>
 
     <div class="card" id="scanReviewCard" hidden>
@@ -703,6 +708,7 @@
       "scan.takePhoto": "📷 تصوير الفاتورة",
       "scan.upload": "⬆ تحميل صورة",
       "scan.engineNote": "المرة الأولى تحتاج اتصالًا بالإنترنت لتحميل محرّك القراءة، ثم يبقى في ذاكرة المتصفح.",
+      "scan.tips": "لقراءة أفضل: ضع الفاتورة على سطح مستوٍ، وأضئها جيدًا، وأبعد الظل، وتأكد أن كل السطور داخل الصورة.",
       "scan.ready": "لم تختر صورة بعد.",
       "scan.reading": "جارٍ قراءة الصورة… قد يستغرق نصف دقيقة.",
       "scan.progress": "جارٍ قراءة الصورة… {p}%",
@@ -725,6 +731,9 @@
       "scan.imgError": "تعذّر فتح الصورة.",
       "scan.newCatName": "اسم التصنيف الجديد",
       "scan.removed": "تم إلغاء قراءة الفاتورة",
+      "scan.rawTitle": "عرض النص الذي قرأه التطبيق",
+      "scan.dropped": "تم تجاهل {n} سطرًا غير واضح.",
+      "scan.totalMismatch": "مجموع البنود {sum} لا يطابق الإجمالي المقروء في الفاتورة {total}؛ قد ينقص بند أو يكون مبلغ قُرئ خطأً — راجع القائمة.",
       "cat.food": "طعام وشراب", "cat.transport": "مواصلات", "cat.bills": "فواتير ومرافق",
       "cat.housing": "سكن وإيجار", "cat.health": "صحة", "cat.education": "تعليم",
       "cat.clothes": "ملابس", "cat.leisure": "ترفيه", "cat.otherExpense": "مصاريف أخرى",
@@ -850,6 +859,7 @@
       "scan.takePhoto": "📷 Take a photo",
       "scan.upload": "⬆ Upload an image",
       "scan.engineNote": "The first time needs an internet connection to download the reading engine; after that it stays in your browser cache.",
+      "scan.tips": "For a better read: lay the receipt on a flat surface, light it well, avoid shadows, and keep every line inside the photo.",
       "scan.ready": "No image selected yet.",
       "scan.reading": "Reading the image… this can take half a minute.",
       "scan.progress": "Reading the image… {p}%",
@@ -872,6 +882,9 @@
       "scan.imgError": "Could not open the image.",
       "scan.newCatName": "New category name",
       "scan.removed": "Invoice reading cancelled",
+      "scan.rawTitle": "Show the text the app read",
+      "scan.dropped": "Ignored {n} unclear lines.",
+      "scan.totalMismatch": "The selected items add up to {sum} but the receipt total reads {total}; a line may be missing or a price misread — check the list.",
       "cat.food": "Food & drink", "cat.transport": "Transport", "cat.bills": "Bills & utilities",
       "cat.housing": "Housing & rent", "cat.health": "Health", "cat.education": "Education",
       "cat.clothes": "Clothing", "cat.leisure": "Leisure", "cat.otherExpense": "Other expenses",
@@ -997,6 +1010,7 @@
       "scan.takePhoto": "📷 Prendre une photo",
       "scan.upload": "⬆ Importer une image",
       "scan.engineNote": "La première fois, une connexion internet est nécessaire pour télécharger le moteur de lecture ; ensuite il reste dans le cache du navigateur.",
+      "scan.tips": "Pour une meilleure lecture : posez le reçu sur une surface plane, éclairez-le bien, évitez les ombres et gardez toutes les lignes dans la photo.",
       "scan.ready": "Aucune image sélectionnée.",
       "scan.reading": "Lecture de l'image… cela peut prendre une trentaine de secondes.",
       "scan.progress": "Lecture de l'image… {p} %",
@@ -1019,6 +1033,9 @@
       "scan.imgError": "Impossible d'ouvrir l'image.",
       "scan.newCatName": "Nom de la nouvelle catégorie",
       "scan.removed": "Lecture de la facture annulée",
+      "scan.rawTitle": "Voir le texte lu par l'application",
+      "scan.dropped": "{n} lignes peu lisibles ignorées.",
+      "scan.totalMismatch": "Le total des articles ({sum}) ne correspond pas au total lu sur la facture ({total}) : une ligne manque peut-être ou un prix est mal lu — vérifiez la liste.",
       "cat.food": "Alimentation", "cat.transport": "Transport", "cat.bills": "Factures et charges",
       "cat.housing": "Logement et loyer", "cat.health": "Santé", "cat.education": "Éducation",
       "cat.clothes": "Vêtements", "cat.leisure": "Loisirs", "cat.otherExpense": "Autres dépenses",
@@ -2020,30 +2037,66 @@
       .replace(/\u066C/g, ",");
   }
 
-  function parseReceiptText(text){
-    const lines = normalizeDigits(text).split(/\r?\n/).map(l => l.replace(/\s+/g, " ").trim()).filter(Boolean);
+  // هل يبدو السطر اسم منتج فعلًا (لا رقم فاتورة، باركود، تاريخ، هاتف...)؟
+  function looksLikeItemLabel(label){
+    const text = String(label || "").trim();
+    if(!text) return false;
+    if(/^[^\p{L}]+$/u.test(text)) return false;
+    const letters = (text.match(/\p{L}/gu) || []).length;
+    const digits = (text.match(/\d/g) || []).length;
+    if(letters < 3) return false;
+    if(digits > letters) return false;
+    if(/\d{5,}/.test(text)) return false;
+    if(/\d{1,4}[\/.-]\d{1,2}[\/.-]\d{1,4}/.test(text)) return false;
+    if(/\d{1,2}:\d{2}/.test(text)) return false;
+    if(/(الرقم الضريبي|رقم ضريبي|سجل تجاري|\bvat\b|\btax id\b|\bcr\b|\btel\b|\bphone\b|هاتف|جوال|\bbarcode\b|\bqr\b|\bsku\b)/i.test(text)) return false;
+    return true;
+  }
+
+  function parseReceiptLines(lines){
     const rows = [];
-    lines.forEach(line => {
-      const m = line.match(/(\d[\d\s.,]*)\s*(?:ر\.س|ريال|درهم|دينار|SAR|AED|USD|EUR|\$|€|£|DH|Dhs)?\s*$/i);
+    let total = 0;
+    let dropped = 0;
+
+    lines.forEach(item => {
+      const line = normalizeDigits(item.text || "").replace(/\s+/g, " ").trim();
+      if(!line) return;
+      const conf = (typeof item.confidence === "number") ? item.confidence : 100;
+      // المبلغ = آخر رقم في السطر فقط (بدون ابتلاع أرقام الكمية أو اسم المنتج)
+      const m = line.match(/(\d[\d.,]*)\s*(?:ر\.س|ريال|درهم|دينار|SAR|AED|USD|EUR|\$|€|£|DH|Dhs)?\s*$/i);
       if(!m || m.index === 0) return;
       const amount = parseAmount(m[1]);
-      if(!(amount > 0) || amount > 1000000) return;
       let label = line.slice(0, m.index).replace(/[\s:;*·\-\u2013\u2014]+$/g, "").trim();
       label = label.replace(/^[\d\s.:;\-*\u2022]+/, "").trim();
-      if(label.length < 2) return;
-      if(/^[\d\s.,:;\/\-]+$/.test(label)) return;
-      if(SCAN_SKIP.test(label)) return;
+
+      // سطر الإجمالي: نحتفظ بمبلغه للمقارنة ولا نعرضه كبند
+      if(SCAN_SKIP.test(label)){
+        if(amount > total && /(total|إجمالي|مجموع|montant|payer)/i.test(label)) total = amount;
+        return;
+      }
+      if(!(amount > 0) || amount > 1000000) return;
+      if(conf < 55 || !looksLikeItemLabel(label)){ dropped++; return; }
+
       rows.push({ label: label, amount: amount, categoryId: classifyCategoryId(label), include: true });
     });
+
     const seen = {};
-    return rows.filter(r => {
+    const unique = rows.filter(r => {
       const k = r.label.toLowerCase() + "|" + r.amount;
       if(seen[k]) return false;
       seen[k] = 1;
       return true;
     }).slice(0, 50);
+
+    return {
+      rows: unique,
+      total: total,
+      dropped: dropped,
+      sum: round2(unique.reduce((a, r) => a + r.amount, 0))
+    };
   }
 
+  // تحسين الصورة قبل القراءة: تكبير الصغيرة، تدرّج رمادي، ومدّ التباين بدون تشويه الصور الملوّنة
   function fileToScanImage(file){
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -2052,24 +2105,41 @@
         const img = new Image();
         img.onerror = () => reject(new Error("image"));
         img.onload = () => {
-          const maxW = 1500;
-          const scale = img.width > maxW ? maxW / img.width : 1;
-          const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+          const maxW = 1800, minW = 1100;
+          let scale = 1;
+          if(img.width > maxW) scale = maxW / img.width;
+          else if(img.width < minW) scale = Math.min(2, minW / img.width);
+          const w = Math.max(1, Math.round(img.width * scale));
+          const h = Math.max(1, Math.round(img.height * scale));
           const canvas = document.createElement("canvas");
           canvas.width = w; canvas.height = h;
           const ctx = canvas.getContext("2d");
+          ctx.imageSmoothingQuality = "high";
           ctx.drawImage(img, 0, 0, w, h);
           try{
             const data = ctx.getImageData(0, 0, w, h);
             const px = data.data;
-            for(let i = 0; i < px.length; i += 4){
-              const g = 0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2];
-              const v = g > 165 ? 255 : (g < 90 ? 0 : Math.round(Math.min(255, (g - 90) * 255 / 75)));
+            const gray = new Uint8ClampedArray(w * h);
+            const hist = new Array(256).fill(0);
+            for(let i = 0, j = 0; i < px.length; i += 4, j++){
+              const g = Math.round(0.299 * px[i] + 0.587 * px[i + 1] + 0.114 * px[i + 2]);
+              gray[j] = g;
+              hist[g]++;
+            }
+            // مدّ التباين بين المئين 2% و 98%
+            const totalPx = w * h;
+            let acc = 0, lo = 0, hi = 255;
+            for(let t = 0; t < 256; t++){ acc += hist[t]; if(acc >= totalPx * 0.02){ lo = t; break; } }
+            acc = 0;
+            for(let t = 255; t >= 0; t--){ acc += hist[t]; if(acc >= totalPx * 0.02){ hi = t; break; } }
+            const span = Math.max(1, hi - lo);
+            for(let i = 0, j = 0; i < px.length; i += 4, j++){
+              const v = Math.max(0, Math.min(255, Math.round((gray[j] - lo) * 255 / span)));
               px[i] = px[i + 1] = px[i + 2] = v;
             }
             ctx.putImageData(data, 0, 0);
           }catch(e){}
-          resolve(canvas.toDataURL("image/jpeg", 0.85));
+          resolve(canvas.toDataURL("image/png"));
         };
         img.src = String(reader.result);
       };
@@ -2077,35 +2147,78 @@
     });
   }
 
+  let ocrWorker = null;
+  let ocrWorkerLang = "";
+
+  function ocrLangFor(l){
+    return l === "ar" ? "ara+eng" : (l === "fr" ? "fra+eng" : "eng");
+  }
+
+  async function getOcrWorker(){
+    const Tesseract = await loadTesseract();
+    const want = ocrLangFor(lang);
+    if(ocrWorker && ocrWorkerLang === want) return ocrWorker;
+    if(ocrWorker){
+      try{ await ocrWorker.terminate(); }catch(e){}
+      ocrWorker = null;
+    }
+    const worker = await Tesseract.createWorker(want, 1, {
+      logger: m => {
+        if(m && m.status === "recognizing text"){
+          setScanStatus(t("scan.progress", { p: Math.round((m.progress || 0) * 100) }));
+        }
+      }
+    });
+    try{
+      await worker.setParameters({
+        tessedit_pageseg_mode: "4",
+        preserve_interword_spaces: "1"
+      });
+    }catch(e){}
+    ocrWorker = worker;
+    ocrWorkerLang = want;
+    return worker;
+  }
+
   async function readInvoice(file){
     if(!file) return;
     scanRows = [];
     $("#scanReviewCard").hidden = true;
     $("#scanPreview").innerHTML = "";
+    if($("#scanRawWrap")) $("#scanRawWrap").hidden = true;
     setScanStatus(t("scan.reading"));
     try{
       const dataUrl = await fileToScanImage(file);
       $("#scanPreview").innerHTML = '<img src="' + dataUrl + '" alt="">';
       setScanStatus(t("scan.engineLoading"));
-      const Tesseract = await loadTesseract();
-      const ocrLang = lang === "ar" ? "ara+eng" : (lang === "fr" ? "fra+eng" : "eng");
-      const res = await Tesseract.recognize(dataUrl, ocrLang, {
-        logger: m => {
-          if(m && m.status === "recognizing text"){
-            setScanStatus(t("scan.progress", { p: Math.round((m.progress || 0) * 100) }));
-          }
-        }
-      });
-      const rows = parseReceiptText(res && res.data ? res.data.text : "");
-      if(!rows.length){
+      const worker = await getOcrWorker();
+      const res = await worker.recognize(dataUrl);
+      const data = (res && res.data) || {};
+      const rawText = String(data.text || "").trim();
+      if($("#scanRaw")) $("#scanRaw").textContent = rawText || "—";
+      if($("#scanRawWrap")) $("#scanRawWrap").hidden = !rawText;
+
+      const lines = (Array.isArray(data.lines) && data.lines.length)
+        ? data.lines.map(l => ({ text: l.text || "", confidence: (typeof l.confidence === "number") ? l.confidence : 100 }))
+        : rawText.split(/\r?\n/).map(text => ({ text: text, confidence: 100 }));
+
+      const parsed = parseReceiptLines(lines);
+      if(!parsed.rows.length){
         setScanStatus(t("scan.none"), "warn");
         return;
       }
-      scanRows = rows;
+      scanRows = parsed.rows;
       $("#scanDate").value = todayISO();
       $("#scanReviewCard").hidden = false;
-      setScanStatus(tn("scan.found", rows.length, { n: rows.length }));
       renderScanRows();
+
+      let msg = tn("scan.found", scanRows.length, { n: scanRows.length });
+      if(parsed.dropped) msg += " " + t("scan.dropped", { n: parsed.dropped });
+      if(parsed.total > 0 && Math.abs(parsed.sum - parsed.total) > Math.max(1, parsed.total * 0.02)){
+        setScanStatus(msg + " " + t("scan.totalMismatch", { sum: fmt(parsed.sum) + " " + cur(), total: fmt(parsed.total) + " " + cur() }), "warn");
+      }else{
+        setScanStatus(msg);
+      }
       window.scrollTo({ top: 0, behavior: "smooth" });
     }catch(err){
       setScanStatus(t("scan.error"), "danger");
