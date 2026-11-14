@@ -16,6 +16,13 @@
   <img src="docs/screenshots/mobile.png" alt="شكل التطبيق على الجوال" width="300">
 </p>
 
+### نفس التطبيق بالإنجليزية والفرنسية
+
+<p align="center">
+  <img src="docs/screenshots/dashboard-en.png" alt="English interface" width="49%">
+  <img src="docs/screenshots/dashboard-fr.png" alt="Interface française" width="49%">
+</p>
+
 ## المزايا
 
 - إدارة **أفراد العائلة** وربط كل حركة بصاحبها.
